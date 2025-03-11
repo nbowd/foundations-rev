@@ -5,12 +5,11 @@ const app = express();
 const bodyParser = require('body-parser');
 
 // Routes
+const usersRouter = require('./routers/users');
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
-})
+app.use('/users', usersRouter);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
