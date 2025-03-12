@@ -1,4 +1,5 @@
 const ticketsDao = require('../repository/ticketsDao');
+const userDao = require('../repository/usersDao');
 const uuid = require('uuid');
 
 async function getTickets() {
@@ -57,6 +58,32 @@ async function createTicket({author, description, type, amount}) {
     } else {
         return {message: "Created ticket", ticket: result};
     }
-}
+};
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor };
+async function changeStatus(ticket_id, user_id, status) {
+    const user = await userDao.getUserById(user_id);
+    
+    if (!user) {
+        return {error: "invalid", message: "User id not found"};
+    }
+
+    const ticket = await ticketsDao.getTicketsById(ticket_id);
+    
+    if (!ticket) {
+        return {error: "invalid", message: "Ticket id not found"};
+    }
+
+    if (user.role === "employee" || ticket.status !== 'pending') {
+        return {error: "forbidden", message: "Forbidden access to edits"};
+    }
+
+    const result = await ticketsDao.changeStatus(ticket_id, user_id, status);
+    
+    if (!result) {
+        return {error: "invalid", message: "Ticket could not be updated"};
+    }
+
+    return {message: "Ticket updated", ticket: result};
+};
+
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus };

@@ -34,6 +34,21 @@ async function getUserByUsername(username) {
     }
 }
 
+async function getUserById(user_id) {
+    const command = new GetCommand({
+        TableName: "FoundationalUsers",
+        Key: {user_id}
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        return data.Item;
+    }catch(err){
+        console.error(err);
+        return null;
+    }
+};
+
 async function createUser(user) {
     const command = new PutCommand({
         TableName: 'FoundationalUsers',
@@ -49,4 +64,4 @@ async function createUser(user) {
     }
 }
 
-module.exports = { getUsers, createUser, getUserByUsername };
+module.exports = { getUsers, createUser, getUserByUsername, getUserById };
