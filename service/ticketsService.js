@@ -11,6 +11,26 @@ async function getTickets() {
     }
 };
 
+async function getTicketsByStatus(status) {
+    const tickets = await ticketsDao.getTicketsByStatus(status);
+    
+    if (!tickets) {
+        return {message: "Failed to get tickets"};
+    } else {
+        return {message: "Found tickets", tickets}
+    }
+};
+
+async function getTicketsByAuthor(author) {
+    const tickets = await ticketsDao.getTicketsByAuthor(author);
+
+    if (!tickets) {
+        return {message: "Failed to get tickets"};
+    } else {
+        return {message: "Found tickets", tickets}
+    }
+};
+
 async function createTicket({author, description, type, amount}) {
     if (!description) {
         return {error: 'description', message: 'Description is required'};
@@ -39,4 +59,4 @@ async function createTicket({author, description, type, amount}) {
     }
 }
 
-module.exports = { getTickets, createTicket };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor };

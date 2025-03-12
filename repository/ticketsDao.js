@@ -15,6 +15,47 @@ async function getTickets(){
     }
 };
 
+async function getTicketsByStatus(status) {
+    const command = new QueryCommand({
+        TableName: "FoundationalTickets",
+        IndexName: "status-index",
+        KeyConditionExpression: "#s = :status",
+        ExpressionAttributeNames: {
+            "#s": "status"
+        },
+        ExpressionAttributeValues: {
+            ":status": status
+        }
+    })
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Items;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
+async function getTicketsByAuthor(author) {
+    const command = new QueryCommand({
+        TableName: "FoundationalTickets",
+        IndexName: "author-index",
+        KeyConditionExpression: "author = :author",
+        ExpressionAttributeValues: {
+            ":author": author
+        }
+    })
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Items;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 async function createTicket(ticket) {
     const command = new PutCommand({
         TableName: 'FoundationalTickets',
@@ -30,4 +71,4 @@ async function createTicket(ticket) {
     }
 }
 
-module.exports = { getTickets, createTicket };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor};
