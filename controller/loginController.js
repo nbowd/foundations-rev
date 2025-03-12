@@ -1,9 +1,10 @@
 const router = require('express')
 const usersService = require('../service/usersService');
+const { validateUserMiddleware } = require('../utils/middleware');
 
 const loginRouter = router.Router();
 
-loginRouter.post('/', async function(req, res) {
+loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     const user = await usersService.loginUser(req.body);
 
     if (user.error == 'username' || user.error == 'password') {

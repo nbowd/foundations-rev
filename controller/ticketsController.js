@@ -1,5 +1,6 @@
 const router = require('express');
 const ticketsService = require('../service/ticketsService');
+const { validateTicketMiddleware } = require('../utils/middleware');
 
 const ticketsRouter = router.Router();
 
@@ -30,14 +31,10 @@ ticketsRouter.post('/', async function(req, res) {
     return res.status(201).json(ticket.ticket);
 })
 
-ticketsRouter.patch('/:ticket_id', async function(req, res) {
+ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, async function(req, res) {
     const ticket_id = req.params.ticket_id;
     const user_id = req.headers['current-user'];
     const status = req.body.status;
-
-    if (!ticket_id || !user_id || !status) {
-        return res.status(400).send("'current-user' header, 'ticket_id' path parameter, and 'status' JSON body required");
-    }
 
     const result = await ticketsService.changeStatus(ticket_id, user_id, status);
 
