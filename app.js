@@ -5,15 +5,15 @@ const app = express();
 const bodyParser = require('body-parser');
 
 // Routes
-const usersRouter = require('./routers/users');
-const loginRouter = require('./routers/login');
-const ticketsRouter = require('./routers/tickets');
+const usersController = require('./controller/usersController');
+const loginController = require('./controller/loginController');
+const ticketsController = require('./controller/ticketsController');
 
 app.use(bodyParser.json());
 
-app.use('/users', usersRouter);
-app.use('/login', loginRouter);
-app.use('/tickets', ticketsRouter);
+app.use('/users', usersController);
+app.use('/login', loginController);
+app.use('/tickets', ticketsController);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

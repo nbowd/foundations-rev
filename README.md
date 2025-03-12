@@ -107,6 +107,7 @@ User Story
 - Previous tickets should also show the details of submission.
 
 
+70% Code Coverage from Testing
 ## Extension Features
 
 ### Frontend
