@@ -64,4 +64,21 @@ async function createUser(user) {
     }
 }
 
-module.exports = { getUsers, createUser, getUserByUsername, getUserById };
+async function deleteUser(user_id) {
+    const command = new DeleteCommand({
+        TableName: "FoundationalUsers",
+        Key: {user_id},
+        ReturnValues: "ALL_OLD"
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        
+        return data.Attributes;
+    }catch(err){
+        console.error(err);
+        return null;
+    }
+}
+
+module.exports = { getUsers, createUser, getUserByUsername, getUserById, deleteUser };

@@ -19,4 +19,14 @@ usersRouter.post('/', validateUserMiddleware, async function(req, res) {
     return res.status(201).json(user.user);
 })
 
+usersRouter.delete('/:user_id', async function(req, res) {
+    const user = await usersService.deleteUser(req.params.user_id);
+
+    if (user.error == 'missing') {
+        return res.status(404).send(user.message);
+    }
+
+    return res.status(200).json(user);
+})
+
 module.exports = usersRouter;

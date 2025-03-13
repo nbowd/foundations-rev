@@ -26,3 +26,8 @@
 2025-03-12T21:55:33.523Z [info]: Incoming POST : /login
 2025-03-12T21:55:38.330Z [info]: Incoming POST : /login
 2025-03-12T22:33:44.205Z [info]: Incoming PATCH : /tickets/a451dcf4-1a32-4146-b65b-34739c94cdda
+2025-03-12T23:46:33.583Z [info]: Incoming POST : /users
+2025-03-12T23:48:49.852Z [info]: Incoming DELETE : /users/11d8955c-1a8e-45cc-be69-3bf44008c171
+2025-03-12T23:49:12.857Z [info]: Incoming DELETE : /users/11d8955c-1a8e-45cc-be69-3bf44008c171
+2025-03-12T23:56:50.533Z [info]: Incoming POST : /users
+2025-03-12T23:57:05.952Z [info]: Incoming DELETE : /users/00792233-2feb-4e25-a71c-9115601021d7a

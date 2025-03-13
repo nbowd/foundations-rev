@@ -43,4 +43,13 @@ async function loginUser({username, password}) {
     return {message: "Logged in", user};
 }
 
-module.exports = { getUsers, createUser, loginUser };
+async function deleteUser(user_id) {
+    let user = await userDao.deleteUser(user_id);
+
+    if (!user) {
+        return {error: 'missing', message: 'No user matching provided id'};
+    }
+    return user;
+}
+
+module.exports = { getUsers, createUser, loginUser, deleteUser };
