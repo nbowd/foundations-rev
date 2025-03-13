@@ -71,6 +71,28 @@ async function getTicketsByAuthor(author) {
     }
 };
 
+async function getTicketsByType(type) {
+    const command = new QueryCommand({
+        TableName: "FoundationalTickets",
+        IndexName: "type-index",
+        KeyConditionExpression: "#t = :type",
+        ExpressionAttributeNames: {
+            "#t": "type"
+        },
+        ExpressionAttributeValues: {
+            ":type": type
+        }
+    })
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Items;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 async function createTicket(ticket) {
     const command = new PutCommand({
         TableName: 'FoundationalTickets',
@@ -126,4 +148,4 @@ async function deleteTicket(ticket_id) {
     }
 }
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus, deleteTicket };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus, deleteTicket, getTicketsByType };

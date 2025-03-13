@@ -20,6 +20,11 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
         return res.status(200).json(tickets.tickets);
     }
 
+    if (queryParams.type) {
+        const tickets = await ticketsService.getTicketsByType(queryParams.type);
+        return res.status(200).json(tickets.tickets);
+    }
+
     const tickets = await ticketsService.getTickets();
     return res.status(200).json(tickets);
 })

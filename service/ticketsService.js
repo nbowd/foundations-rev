@@ -36,6 +36,16 @@ async function getTicketsByAuthor(author) {
     }
 };
 
+async function getTicketsByType(type) {
+    const tickets = await ticketsDao.getTicketsByType(type);
+
+    if (!tickets) {
+        return {message: "Failed to get tickets"};
+    } else {
+        return {message: "Found tickets", tickets}
+    }
+};
+
 async function createTicket({author, description, type, amount}, user) {
     if (!description) {
         return {error: 'description', message: 'Description is required'};
@@ -103,4 +113,4 @@ async function deleteTicket(ticket_id) {
     return user;
 }
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus, deleteTicket };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus, deleteTicket, getTicketsByType };
