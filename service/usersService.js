@@ -1,5 +1,8 @@
 const userDao = require('../repository/usersDao');
 const uuid = require('uuid');
+const bcrypt = require("bcrypt");
+
+const saltRounds = 10;
 
 async function getUsers() {
     const result = await userDao.getUsers();
@@ -18,7 +21,8 @@ async function createUser({username, password}) {
         return {error: 'duplicate', message: "Username is already taken"};
     }
 
-    const result = await userDao.createUser({user_id: uuid.v4(), username, password, role: "employee"});
+    const hashPass = await bcrypt.hash(password, saltRounds);
+    const result = await userDao.createUser({user_id: uuid.v4(), username, password: hashPass, role: "employee"});
 
     if (!result) {
         return {message: "Failed to create user"};
@@ -35,8 +39,8 @@ async function loginUser({username, password}) {
     } else {
         user = user[0];
     }
-
-    if (user.password !== password) {
+    
+    if (!await bcrypt.compare(password, user.password)) {
         return {error: 'password', message: 'Password missing or invalid'};
     }
 
