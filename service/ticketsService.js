@@ -12,7 +12,11 @@ async function getTickets() {
     }
 };
 
-async function getTicketsByStatus(status) {
+async function getTicketsByStatus(status, user) {
+    if (user.role !== 'manager') {
+        return {error: "forbidden", message: "Manager only endpoint"};
+    }
+
     const tickets = await ticketsDao.getTicketsByStatus(status);
     
     if (!tickets) {
@@ -32,7 +36,7 @@ async function getTicketsByAuthor(author) {
     }
 };
 
-async function createTicket({author, description, type, amount}) {
+async function createTicket({author, description, type, amount}, user) {
     if (!description) {
         return {error: 'description', message: 'Description is required'};
     }
@@ -40,7 +44,11 @@ async function createTicket({author, description, type, amount}) {
     if (!amount) {
         return {error: 'amount', message: 'Amount is required'};
     }
-    
+
+    if (author !== user.id) {
+        return {error: 'invalid', message: 'Authorized user id is not the same as author id'};
+    }
+
     const newTicket = {
         ticket_id: uuid.v4(),
         description,
@@ -73,7 +81,7 @@ async function changeStatus(ticket_id, user_id, status) {
         return {error: "invalid", message: "Ticket id not found"};
     }
 
-    if (user.role === "employee" || ticket.status !== 'pending') {
+    if (ticket.status !== 'pending') {
         return {error: "forbidden", message: "Forbidden access to edits"};
     }
 

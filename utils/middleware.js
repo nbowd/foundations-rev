@@ -1,3 +1,34 @@
+const jwt = require("jsonwebtoken");
+const logger = require("./logger");
+
+async function decodeJWT(token) {
+    try {
+        const user = await jwt.verify(token, process.env.secretKey);
+        return user;
+    } catch (error) {
+        logger.error(error);
+        throw new Error("Token verification failed");
+    }
+}
+
+async function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token){
+        return res.status(401).send("Missing Authorization");
+    } 
+
+    try {
+        const user = await decodeJWT(token);
+        req.user = user;
+        next();
+    } catch (error) {
+        return res.status(401).send("Invalid token");
+    }
+       
+    
+}
 function validateUser(data) {
     return (data.username && data.password)
 }
@@ -12,19 +43,37 @@ function validateUserMiddleware(req, res, next) {
     }
 }
 
-function validateTicket(ticket_id, user_id, status) {
-    return (ticket_id && user_id && status);
+function validateTicket(ticket_id, status) {
+    return (ticket_id && status);
 }
 
 function validateTicketMiddleware(req, res, next) {
     const ticket_id = req.params.ticket_id;
-    const user_id = req.headers['current-user'];
     const status = req.body.status;
 
-    if (validateTicket(ticket_id, user_id, status)) {
+    if (validateTicket(ticket_id, status)) {
         next()
     } else {
-        res.status(400).send("'current-user' header, 'ticket_id' path parameter, and 'status' JSON body required");
+        res.status(400).send("'ticket_id' path parameter, and 'status' JSON body required");
     }
 }
-module.exports = { validateUserMiddleware, validateTicketMiddleware };
+
+function validateManager(user) {
+    return user.role === 'manager';
+}
+
+
+
+function validateManagerMiddleWare(req, res, next) {
+    const user = req.user;
+
+    if (validateManager(user)) {
+        next();
+    } else {
+        return res.status(403).send("Manager only endpoint")
+    }
+    
+}
+
+
+module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare };

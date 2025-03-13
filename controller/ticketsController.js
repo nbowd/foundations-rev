@@ -1,14 +1,17 @@
 const router = require('express');
 const ticketsService = require('../service/ticketsService');
-const { validateTicketMiddleware } = require('../utils/middleware');
+const { validateTicketMiddleware, authenticateToken, validateManagerMiddleWare } = require('../utils/middleware');
 
 const ticketsRouter = router.Router();
 
-ticketsRouter.get('/', async function(req, res) {
+ticketsRouter.get('/', authenticateToken, async function(req, res) {
     const queryParams = req.query;
     
     if (queryParams.status) {
-        const tickets = await ticketsService.getTicketsByStatus(queryParams.status);
+        const tickets = await ticketsService.getTicketsByStatus(queryParams.status, req.user);
+        if (tickets.error) {
+            return res.status(403).send(tickets.message);
+        }
         return res.status(200).json(tickets.tickets);
     }
 
@@ -21,19 +24,19 @@ ticketsRouter.get('/', async function(req, res) {
     return res.status(200).json(tickets);
 })
 
-ticketsRouter.post('/', async function(req, res) {
-    const ticket = await ticketsService.createTicket(req.body);
+ticketsRouter.post('/', authenticateToken, async function(req, res) {
+    const ticket = await ticketsService.createTicket(req.body, req.user);
 
-    if (ticket.error == 'amount' || ticket.error == 'description') {
+    if (ticket.error) {
         return res.status(400).send(ticket.message);
     }
 
     return res.status(201).json(ticket.ticket);
 })
 
-ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, async function(req, res) {
+ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, async function(req, res) {
     const ticket_id = req.params.ticket_id;
-    const user_id = req.headers['current-user'];
+    const user_id = req.user.id;
     const status = req.body.status;
 
     const result = await ticketsService.changeStatus(ticket_id, user_id, status);
