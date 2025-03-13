@@ -8,7 +8,7 @@ function validateUserMiddleware(req, res, next) {
     if (validateUser(data)) {
         next();
     } else {
-        res.status(400).send("Invalid Username or Password")
+        res.status(400).send("Missing Username or Password")
     }
 }
 

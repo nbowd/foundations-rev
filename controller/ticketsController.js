@@ -9,12 +9,12 @@ ticketsRouter.get('/', async function(req, res) {
     
     if (queryParams.status) {
         const tickets = await ticketsService.getTicketsByStatus(queryParams.status);
-        return res.status(200).json(tickets);
+        return res.status(200).json(tickets.tickets);
     }
 
     if (queryParams.author) {
         const tickets = await ticketsService.getTicketsByAuthor(queryParams.author);
-        return res.status(200).json(tickets);
+        return res.status(200).json(tickets.tickets);
     }
 
     const tickets = await ticketsService.getTickets();
