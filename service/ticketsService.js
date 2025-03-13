@@ -86,4 +86,13 @@ async function changeStatus(ticket_id, user_id, status) {
     return {message: "Ticket updated", ticket: result};
 };
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus };
+async function deleteTicket(ticket_id) {
+    const user = await ticketsDao.deleteTicket(ticket_id);
+
+    if (!user) {
+        return {error: 'missing', message: 'No user matching provided id'};
+    }
+    return user;
+}
+
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus, deleteTicket };

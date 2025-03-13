@@ -31,3 +31,8 @@
 2025-03-12T23:49:12.857Z [info]: Incoming DELETE : /users/11d8955c-1a8e-45cc-be69-3bf44008c171
 2025-03-12T23:56:50.533Z [info]: Incoming POST : /users
 2025-03-12T23:57:05.952Z [info]: Incoming DELETE : /users/00792233-2feb-4e25-a71c-9115601021d7a
+2025-03-12T23:58:32.758Z [info]: Incoming DELETE : /users/00792233-2feb-4e25-a71c-9115601021d7a
+2025-03-12T23:58:39.180Z [info]: Incoming DELETE : /users/00792233-2feb-4e25-a71c-9115601021d7
+2025-03-13T00:14:19.215Z [info]: Incoming POST : /tickets
+2025-03-13T00:16:01.880Z [info]: Incoming DELETE : /tickets/684d6162-ab74-458d-b7b9-e50adec4dffda
+2025-03-13T00:16:06.205Z [info]: Incoming DELETE : /tickets/684d6162-ab74-458d-b7b9-e50adec4dffd

@@ -110,4 +110,20 @@ async function changeStatus(ticket_id, user_id, status) {
     }
 }
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus};
+async function deleteTicket(ticket_id) {
+    const command = new DeleteCommand({
+        TableName: "FoundationalTickets",
+        Key: {ticket_id},
+        ReturnValues: "ALL_OLD"
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        return data.Attributes;
+    }catch(err){
+        console.error(err);
+        return null;
+    }
+}
+
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus, deleteTicket };

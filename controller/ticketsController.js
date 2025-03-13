@@ -49,4 +49,14 @@ ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, async function(req,
     return res.status(202).json(result.ticket);
 })
 
+ticketsRouter.delete('/:ticket_id', async function(req, res) {
+    const ticket = await ticketsService.deleteTicket(req.params.ticket_id);
+
+    if (ticket.error == 'missing') {
+        return res.status(404).send(ticket.message);
+    }
+
+    return res.status(200).json(ticket);
+})
+
 module.exports = ticketsRouter;
