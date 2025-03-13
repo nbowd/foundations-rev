@@ -47,6 +47,16 @@ async function loginUser({username, password}) {
     return {message: "Logged in", user};
 }
 
+async function changeRole(user_id, { role }) {
+    const user = await userDao.changeRole(user_id, role);
+
+    if (!user) {
+        return {message: "Failed to update user"};
+    } else {
+        return {message: "Updated user", user: user}
+    }
+}
+
 async function deleteUser(user_id) {
     let user = await userDao.deleteUser(user_id);
 
@@ -56,4 +66,4 @@ async function deleteUser(user_id) {
     return user;
 }
 
-module.exports = { getUsers, createUser, loginUser, deleteUser };
+module.exports = { getUsers, createUser, loginUser, deleteUser, changeRole };

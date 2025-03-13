@@ -1,6 +1,6 @@
 const router = require('express')
 const usersService = require('../service/usersService');
-const { validateUserMiddleware } = require('../utils/middleware');
+const { validateUserMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware } = require('../utils/middleware');
 
 const usersRouter = router.Router();
 
@@ -18,6 +18,12 @@ usersRouter.post('/', validateUserMiddleware, async function(req, res) {
 
     return res.status(201).json(user.user);
 })
+
+usersRouter.patch('/:user_id', authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, async function(req,res) {
+    const user = await usersService.changeRole(req.params.user_id, req.body)
+    
+    return res.status(202).json(user.user);
+});
 
 usersRouter.delete('/:user_id', async function(req, res) {
     const user = await usersService.deleteUser(req.params.user_id);

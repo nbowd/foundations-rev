@@ -75,5 +75,20 @@ function validateManagerMiddleWare(req, res, next) {
     
 }
 
+function validateChangeRole(user_id, role, user){
+    return (user_id && role && user);
+}
 
-module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare };
+function validateChangeRoleMiddleware(req, res, next) {
+    const user_id = req.params.user_id;
+    const { role } = req.body;
+    const user = req.user;
+
+    if (validateChangeRole(user_id, role, user)) {
+        next();
+    } else {
+        return res.status(400).send("Missing user_id path param, role body attribute, user auth");
+    }
+}
+
+module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware };

@@ -1,4 +1,4 @@
-const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand} = require("@aws-sdk/lib-dynamodb")
+const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
 const documentClient = require('../utils/config');
 
 async function getUsers(){
@@ -64,6 +64,28 @@ async function createUser(user) {
     }
 }
 
+async function changeRole(user_id, role) {
+    const command = new UpdateCommand({
+        TableName: "FoundationalUsers",
+        Key: { user_id },
+        UpdateExpression: "SET #r = :role",
+        ExpressionAttributeNames: {
+            "#r": "role"
+        },
+        ExpressionAttributeValues: {
+            ":role": role
+        },
+        ReturnValues: "ALL_NEW"
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Attributes;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 async function deleteUser(user_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalUsers",
@@ -81,4 +103,4 @@ async function deleteUser(user_id) {
     }
 }
 
-module.exports = { getUsers, createUser, getUserByUsername, getUserById, deleteUser };
+module.exports = { getUsers, createUser, getUserByUsername, getUserById, deleteUser, changeRole };
