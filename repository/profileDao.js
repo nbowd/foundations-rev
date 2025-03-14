@@ -1,5 +1,7 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
-const {documentClient} = require('../utils/config');
+const {PutObjectCommand} = require("@aws-sdk/client-s3");
+const {documentClient, s3} = require('../utils/config');
+const uuid = require('uuid');
 
 async function createProfile(profile) {
     const command = new PutCommand({
@@ -55,6 +57,24 @@ async function updateProfile(user_id, profile) {
     }
 }
 
+async function uploadPhoto(file) {
+    const fileName = `profile/${uuid.v4()}.jpg`;
+
+    const command = new PutObjectCommand({
+        Bucket: "foundational-profile",
+        Key: fileName,
+        Body: file,
+        ContentType: "image/jpeg",
+    });
+
+    try {
+        await s3.send(command);
+        return fileName;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 async function deleteProfile(user_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalProfile",
@@ -72,4 +92,4 @@ async function deleteProfile(user_id) {
     }
 }
 
-module.exports = { createProfile, deleteProfile, updateProfile, getProfileById };
+module.exports = { createProfile, deleteProfile, updateProfile, getProfileById, uploadPhoto };

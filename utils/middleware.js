@@ -103,4 +103,15 @@ function validateReceiptMiddleware(req, res, next) {
     }
 }
 
-module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, validateReceiptMiddleware };
+function validatePhoto(user_id, file){
+    return (user_id && file && file.length > 0);
+}
+
+function validatePhotoMiddleware(req, res, next) {
+    if (validatePhoto(req.params.user_id, req.body)) {
+        next();
+    } else {
+        return res.status(400).send("No image uploaded")
+    }
+}
+module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, validateReceiptMiddleware, validatePhotoMiddleware };

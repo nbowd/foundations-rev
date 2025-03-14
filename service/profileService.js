@@ -27,4 +27,22 @@ async function updateProfile(user_id, updates, user) {
     }
 }
 
-module.exports = { updateProfile };
+async function addPhoto(user_id, file, user) {
+    const profile = await profileDao.getProfileById(user_id);
+
+    if (!profile) {
+        return {error: "Missing", message: "Profile not found"}
+    }
+
+    if (user.id !== profile.user_id) {
+        return {error: "Forbidden", message: "Profile is not owned by requester"};
+    }
+
+    const fileName = await profileDao.uploadPhoto(file);
+
+    const newProfile = await profileDao.updateProfile(user_id, {...profile, profile_picture: fileName}, user);
+
+    return {message: "Profile found", profile: newProfile};
+};
+
+module.exports = { updateProfile, addPhoto };
