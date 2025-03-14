@@ -91,4 +91,16 @@ function validateChangeRoleMiddleware(req, res, next) {
     }
 }
 
-module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware };
+function validateReceipt(ticket_id, file) {
+    return (ticket_id && file && file.length > 0);
+}
+
+function validateReceiptMiddleware(req, res, next) {
+    if (validateReceipt(req.params.ticket_id, req.body)) {
+        next();
+    } else {
+        return res.status(400).send("No image uploaded");
+    }
+}
+
+module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, validateReceiptMiddleware };

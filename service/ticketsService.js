@@ -66,7 +66,8 @@ async function createTicket({author, description, type, amount}, user) {
         type,
         author,
         resolver: "",
-        status: "pending"
+        status: "pending",
+        receipt: ""
     };
 
     const result = await ticketsDao.createTicket(newTicket);
@@ -104,6 +105,24 @@ async function changeStatus(ticket_id, user_id, status) {
     return {message: "Ticket updated", ticket: result};
 };
 
+async function addReceipt(ticket_id, file, user) {
+    const ticket = await ticketsDao.getTicketsById(ticket_id);
+
+    if (!ticket) {
+        return {error: "Missing", message: "Ticket not found"}
+    }
+
+    if (user.id !== ticket.author) {
+        return {error: "Forbidden", message: "Ticket is not owned by requester"};
+    }
+
+    const fileName = await ticketsDao.uploadReceipt(file);
+
+    const newTicket = await ticketsDao.updateTicket(ticket.ticket_id, fileName);
+
+    return {message: "Ticket found", ticket: newTicket};
+}
+
 async function deleteTicket(ticket_id) {
     const user = await ticketsDao.deleteTicket(ticket_id);
 
@@ -113,4 +132,4 @@ async function deleteTicket(ticket_id) {
     return user;
 }
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus, deleteTicket, getTicketsByType };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, changeStatus, deleteTicket, getTicketsByType, addReceipt };

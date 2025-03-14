@@ -1,5 +1,5 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
-const documentClient = require('../utils/config');
+const {documentClient} = require('../utils/config');
 
 async function getUsers(){
     const command = new ScanCommand({

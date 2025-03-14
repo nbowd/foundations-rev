@@ -14,6 +14,7 @@ function loggerMiddleware(req, res, next){
 
 const app = express();
 app.use(bodyParser.json());
+app.use(express.raw({ type: "image/*", limit: "5mb" })); // Accept raw binary image data
 app.use(loggerMiddleware);
 
 app.use('/users', usersController);

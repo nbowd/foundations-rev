@@ -33,6 +33,7 @@ async function createUser({username, password}) {
 
 async function loginUser({username, password}) {
     let user = await userDao.getUserByUsername(username);
+    console.log(user);
     
     if (user.length == 0) {
         return {error: 'username', message: 'Username missing or invalid'};

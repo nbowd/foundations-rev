@@ -1,5 +1,7 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
-const documentClient = require('../utils/config');
+const {documentClient, s3} = require('../utils/config');
+const {PutObjectCommand, GetObjectCommand  } = require("@aws-sdk/client-s3");
+const uuid = require('uuid');
 
 async function getTickets(){
     const command = new ScanCommand({
@@ -132,6 +134,44 @@ async function changeStatus(ticket_id, user_id, status) {
     }
 }
 
+async function uploadReceipt(file) {
+    const fileName = `receipts/${uuid.v4()}.jpg`;
+
+    const command = new PutObjectCommand({
+        Bucket: "foundational-receipts",
+        Key: fileName,
+        Body: file,
+        ContentType: "image/jpeg",
+        ReturnValues: ""
+    });
+
+    try {
+        await s3.send(command);
+        return fileName;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+async function updateTicket(ticket_id, fileName) {
+    const command = new UpdateCommand({
+        TableName: "FoundationalTickets",
+        Key: { ticket_id },
+        UpdateExpression: "SET receipt = :receipt",
+        ExpressionAttributeValues: {
+            ":receipt": fileName
+        },
+        ReturnValues: "ALL_NEW"
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Attributes;
+    } catch (error) {
+        console.log(error)
+    }
+};
+
 async function deleteTicket(ticket_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalTickets",
@@ -148,4 +188,4 @@ async function deleteTicket(ticket_id) {
     }
 }
 
-module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus, deleteTicket, getTicketsByType };
+module.exports = { getTickets, createTicket, getTicketsByStatus, getTicketsByAuthor, getTicketsById, changeStatus, deleteTicket, getTicketsByType, uploadReceipt, updateTicket };
