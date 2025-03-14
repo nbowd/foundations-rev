@@ -1,0 +1,75 @@
+const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
+const {documentClient} = require('../utils/config');
+
+async function createProfile(profile) {
+    const command = new PutCommand({
+        TableName: 'FoundationalProfile',
+        Item: profile,
+        ReturnValues: "ALL_OLD"
+    })
+
+    try {
+        const newProfile = await documentClient.send(command);
+        return newProfile
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+async function getProfileById(user_id) {
+    const command = new GetCommand({
+        TableName: "FoundationalProfile",
+        Key: { user_id }
+    });
+
+    try{
+        const data = await documentClient.send(command);
+        return data.Item;
+    }catch(err){
+        console.error(err);
+        return null;
+    }
+}
+
+async function updateProfile(user_id, profile) {
+    const command = new UpdateCommand({
+        TableName: "FoundationalProfile",
+        Key: { user_id },
+        UpdateExpression: "SET first_name = :first_name, last_name = :last_name, office_location = :office_location, title = :title, profile_picture = :profile_picture",
+        ExpressionAttributeValues: {
+            ":first_name": profile.first_name,
+            ":last_name": profile.last_name,
+            ":office_location": profile.office_location,
+            ":title": profile.title,
+            ":profile_picture": profile.profile_picture
+        },
+        ReturnValues: "ALL_NEW"
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Attributes;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function deleteProfile(user_id) {
+    const command = new DeleteCommand({
+        TableName: "FoundationalProfile",
+        Key: {user_id},
+        ReturnValues: "ALL_OLD"
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        
+        return data.Attributes;
+    }catch(err){
+        console.error(err);
+        return null;
+    }
+}
+
+module.exports = { createProfile, deleteProfile, updateProfile, getProfileById };

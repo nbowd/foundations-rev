@@ -1,4 +1,5 @@
 const userDao = require('../repository/usersDao');
+const profileDao = require('../repository/profileDao');
 const uuid = require('uuid');
 const bcrypt = require("bcrypt");
 
@@ -22,9 +23,12 @@ async function createUser({username, password}) {
     }
 
     const hashPass = await bcrypt.hash(password, saltRounds);
-    const result = await userDao.createUser({user_id: uuid.v4(), username, password: hashPass, role: "employee"});
+    const user_id = uuid.v4();
+    const result = await userDao.createUser({user_id, username, password: hashPass, role: "employee"});
 
-    if (!result) {
+    const profile = await profileDao.createProfile({user_id, first_name: "", last_name: "", title: "", office_location: "", profile_picture: ""});
+
+    if (!result || !profile) {
         return {message: "Failed to create user"};
     } else {
         return {message: "Created user", user: result};
@@ -60,8 +64,9 @@ async function changeRole(user_id, { role }) {
 
 async function deleteUser(user_id) {
     let user = await userDao.deleteUser(user_id);
+    const profile = await profileDao.deleteProfile(user_id);
 
-    if (!user) {
+    if (!user || !profile) {
         return {error: 'missing', message: 'No user matching provided id'};
     }
     return user;

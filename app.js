@@ -6,6 +6,7 @@ const logger = require('./utils/logger');
 const usersController = require('./controller/usersController');
 const loginController = require('./controller/loginController');
 const ticketsController = require('./controller/ticketsController');
+const profileController = require('./controller/profileController');
 
 function loggerMiddleware(req, res, next){
     logger.info(`Incoming ${req.method} : ${req.url}`);
@@ -20,6 +21,7 @@ app.use(loggerMiddleware);
 app.use('/users', usersController);
 app.use('/login', loginController);
 app.use('/tickets', ticketsController);
+app.use('/profile', profileController);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
