@@ -26,9 +26,8 @@ async function authenticateToken(req, res, next) {
     } catch (error) {
         return res.status(401).send("Invalid token");
     }
-       
-    
 }
+
 function validateUser(data) {
     return (data.username && data.password)
 }
@@ -43,26 +42,9 @@ function validateUserMiddleware(req, res, next) {
     }
 }
 
-function validateTicket(ticket_id, status) {
-    return (ticket_id && status);
-}
-
-function validateTicketMiddleware(req, res, next) {
-    const ticket_id = req.params.ticket_id;
-    const status = req.body.status;
-
-    if (validateTicket(ticket_id, status)) {
-        next()
-    } else {
-        res.status(400).send("'ticket_id' path parameter, and 'status' JSON body required");
-    }
-}
-
 function validateManager(user) {
     return user.role === 'manager';
 }
-
-
 
 function validateManagerMiddleWare(req, res, next) {
     const user = req.user;
@@ -72,46 +54,6 @@ function validateManagerMiddleWare(req, res, next) {
     } else {
         return res.status(403).send("Manager only endpoint")
     }
-    
 }
 
-function validateChangeRole(user_id, role, user){
-    return (user_id && role && user);
-}
-
-function validateChangeRoleMiddleware(req, res, next) {
-    const user_id = req.params.user_id;
-    const { role } = req.body;
-    const user = req.user;
-
-    if (validateChangeRole(user_id, role, user)) {
-        next();
-    } else {
-        return res.status(400).send("Missing user_id path param, role body attribute, user auth");
-    }
-}
-
-function validateReceipt(ticket_id, file) {
-    return (ticket_id && file && file.length > 0);
-}
-
-function validateReceiptMiddleware(req, res, next) {
-    if (validateReceipt(req.params.ticket_id, req.body)) {
-        next();
-    } else {
-        return res.status(400).send("No image uploaded");
-    }
-}
-
-function validatePhoto(user_id, file){
-    return (user_id && file && file.length > 0);
-}
-
-function validatePhotoMiddleware(req, res, next) {
-    if (validatePhoto(req.params.user_id, req.body)) {
-        next();
-    } else {
-        return res.status(400).send("No image uploaded")
-    }
-}
-module.exports = { validateUserMiddleware, validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, validateReceiptMiddleware, validatePhotoMiddleware };
+module.exports = { validateUserMiddleware, authenticateToken, validateManagerMiddleWare };

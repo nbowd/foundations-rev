@@ -1,8 +1,35 @@
 const router = require('express');
 const ticketsService = require('../service/ticketsService');
-const { validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, validateReceiptMiddleware } = require('../utils/middleware');
+const { authenticateToken, validateManagerMiddleWare } = require('../utils/middleware');
 
 const ticketsRouter = router.Router();
+
+function validateReceipt(ticket_id, file) {
+    return (ticket_id && file && file.length > 0);
+}
+
+function validateReceiptMiddleware(req, res, next) {
+    if (validateReceipt(req.params.ticket_id, req.body)) {
+        next();
+    } else {
+        return res.status(400).send("No image uploaded");
+    }
+}
+
+function validateTicket(ticket_id, status) {
+    return (ticket_id && status);
+}
+
+function validateTicketMiddleware(req, res, next) {
+    const ticket_id = req.params.ticket_id;
+    const status = req.body.status;
+
+    if (validateTicket(ticket_id, status)) {
+        next()
+    } else {
+        res.status(400).send("'ticket_id' path parameter, and 'status' JSON body required");
+    }
+}
 
 ticketsRouter.get('/', authenticateToken, async function(req, res) {
     const queryParams = req.query;

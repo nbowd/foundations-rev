@@ -1,7 +1,20 @@
 const router = require('express');
 const profileService = require('../service/profileService');
-const { authenticateToken, validatePhotoMiddleware } = require("../utils/middleware");
+const { authenticateToken } = require("../utils/middleware");
+
 const profileRouter = router.Router();
+
+function validatePhoto(user_id, file){
+    return (user_id && file && file.length > 0);
+}
+
+function validatePhotoMiddleware(req, res, next) {
+    if (validatePhoto(req.params.user_id, req.body)) {
+        next();
+    } else {
+        return res.status(400).send("No image uploaded")
+    }
+}
 
 profileRouter.patch('/:user_id', authenticateToken, async function(req, res) {
     const user_id = req.params.user_id;
