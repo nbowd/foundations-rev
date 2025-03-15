@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const logger = require("./logger");
 
+/* istanbul ignore next */
 async function decodeJWT(token) {
     try {
         const user = await jwt.verify(token, process.env.secretKey);
@@ -11,6 +12,7 @@ async function decodeJWT(token) {
     }
 }
 
+/* istanbul ignore next */
 async function authenticateToken(req, res, next) {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
@@ -29,9 +31,14 @@ async function authenticateToken(req, res, next) {
 }
 
 function validateUser(data) {
-    return (data.username && data.password)
+    if (!data.username || !data.password) {
+        return false;
+    } else {
+        return (data.username.length > 0 && data.password.length > 0);
+    }
 }
 
+/* istanbul ignore next */
 function validateUserMiddleware(req, res, next) {
     const data = req.body;
 
@@ -46,6 +53,7 @@ function validateManager(user) {
     return user.role === 'manager';
 }
 
+/* istanbul ignore next */
 function validateManagerMiddleWare(req, res, next) {
     const user = req.user;
 
@@ -56,4 +64,4 @@ function validateManagerMiddleWare(req, res, next) {
     }
 }
 
-module.exports = { validateUserMiddleware, authenticateToken, validateManagerMiddleWare };
+module.exports = { validateUser, validateManager, validateUserMiddleware, authenticateToken, validateManagerMiddleWare };

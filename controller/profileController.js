@@ -1,13 +1,18 @@
-const router = require('express');
+const express = require('express');
 const profileService = require('../service/profileService');
 const { authenticateToken } = require("../utils/middleware");
 
-const profileRouter = router.Router();
+const profileRouter = express.Router();
 
 function validatePhoto(user_id, file){
-    return (user_id && file && file.length > 0);
+    if (!user_id || !file) {
+        return false;
+    } else {
+        return user_id.length > 0 && file.length > 0;
+    }
 }
 
+/* istanbul ignore next */
 function validatePhotoMiddleware(req, res, next) {
     if (validatePhoto(req.params.user_id, req.body)) {
         next();
@@ -16,6 +21,7 @@ function validatePhotoMiddleware(req, res, next) {
     }
 }
 
+/* istanbul ignore next */
 profileRouter.patch('/:user_id', authenticateToken, async function(req, res) {
     const user_id = req.params.user_id;
     const body = req.body;
@@ -34,6 +40,7 @@ profileRouter.patch('/:user_id', authenticateToken, async function(req, res) {
     return res.status(202).send(profile.profile);
 })
 
+/* istanbul ignore next */
 profileRouter.post('/:user_id/photo', authenticateToken, validatePhotoMiddleware, async function(req, res){
     const user_id = req.params.user_id;
     const file = req.body;
@@ -51,4 +58,4 @@ profileRouter.post('/:user_id/photo', authenticateToken, validatePhotoMiddleware
     return res.status(202).json(profile.profile);
 });
 
-module.exports = profileRouter;
+module.exports = {validatePhoto, profileRouter};

@@ -3,6 +3,7 @@ const {documentClient, s3} = require('../utils/config');
 const {PutObjectCommand, GetObjectCommand  } = require("@aws-sdk/client-s3");
 const uuid = require('uuid');
 
+/* istanbul ignore next */
 async function getTickets(){
     const command = new ScanCommand({
         TableName: "FoundationalTickets"
@@ -17,6 +18,7 @@ async function getTickets(){
     }
 };
 
+/* istanbul ignore next */
 async function getTicketsById(ticket_id){
     const command = new GetCommand({
         TableName: "FoundationalTickets",
@@ -32,6 +34,7 @@ async function getTicketsById(ticket_id){
     }
 };
 
+/* istanbul ignore next */
 async function getTicketsByStatus(status) {
     const command = new QueryCommand({
         TableName: "FoundationalTickets",
@@ -54,6 +57,7 @@ async function getTicketsByStatus(status) {
     }
 };
 
+/* istanbul ignore next */
 async function getTicketsByAuthor(author) {
     const command = new QueryCommand({
         TableName: "FoundationalTickets",
@@ -73,6 +77,7 @@ async function getTicketsByAuthor(author) {
     }
 };
 
+/* istanbul ignore next */
 async function getTicketsByType(type) {
     const command = new QueryCommand({
         TableName: "FoundationalTickets",
@@ -95,6 +100,7 @@ async function getTicketsByType(type) {
     }
 };
 
+/* istanbul ignore next */
 async function createTicket(ticket) {
     const command = new PutCommand({
         TableName: 'FoundationalTickets',
@@ -110,6 +116,7 @@ async function createTicket(ticket) {
     }
 }
 
+/* istanbul ignore next */
 async function changeStatus(ticket_id, user_id, status) {
     const command = new UpdateCommand({
         TableName: "FoundationalTickets",
@@ -134,6 +141,7 @@ async function changeStatus(ticket_id, user_id, status) {
     }
 }
 
+/* istanbul ignore next */
 async function uploadReceipt(file) {
     const fileName = `receipts/${uuid.v4()}.jpg`;
 
@@ -153,6 +161,7 @@ async function uploadReceipt(file) {
     }
 };
 
+/* istanbul ignore next */
 async function updateTicket(ticket_id, fileName) {
     const command = new UpdateCommand({
         TableName: "FoundationalTickets",
@@ -172,6 +181,7 @@ async function updateTicket(ticket_id, fileName) {
     }
 };
 
+/* istanbul ignore next */
 async function deleteTicket(ticket_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalTickets",

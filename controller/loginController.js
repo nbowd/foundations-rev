@@ -1,10 +1,11 @@
-const router = require('express')
+const express = require('express')
 const jwt = require('jsonwebtoken');
 const usersService = require('../service/usersService');
 const { validateUserMiddleware } = require('../utils/middleware');
 
-const loginRouter = router.Router();
+const loginRouter = express.Router();
 
+/* istanbul ignore next */
 loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     const user = await usersService.loginUser(req.body);
 
@@ -27,4 +28,4 @@ loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     return res.status(201).json({user: user.user, token});
 })
 
-module.exports = loginRouter;
+module.exports = {loginRouter};

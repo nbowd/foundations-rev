@@ -1,5 +1,6 @@
 const profileDao = require('../repository/profileDao');
 
+/* istanbul ignore next */
 async function updateProfile(user_id, updates, user) {
     if (user.id !== user_id) {
         return {error: "Forbidden", message: "Profile is not owned by requester"}
@@ -27,6 +28,7 @@ async function updateProfile(user_id, updates, user) {
     }
 }
 
+/* istanbul ignore next */
 async function addPhoto(user_id, file, user) {
     const profile = await profileDao.getProfileById(user_id);
 

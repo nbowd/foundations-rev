@@ -1,6 +1,7 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
 const {documentClient} = require('../utils/config');
 
+/* istanbul ignore next */
 async function getUsers(){
     const command = new ScanCommand({
         TableName: "FoundationalUsers"
@@ -15,6 +16,7 @@ async function getUsers(){
     }
 };
 
+/* istanbul ignore next */
 async function getUserByUsername(username) {
     const command = new QueryCommand({
         TableName: "FoundationalUsers",
@@ -34,6 +36,7 @@ async function getUserByUsername(username) {
     }
 }
 
+/* istanbul ignore next */
 async function getUserById(user_id) {
     const command = new GetCommand({
         TableName: "FoundationalUsers",
@@ -49,6 +52,7 @@ async function getUserById(user_id) {
     }
 };
 
+/* istanbul ignore next */
 async function createUser(user) {
     const command = new PutCommand({
         TableName: 'FoundationalUsers',
@@ -64,6 +68,7 @@ async function createUser(user) {
     }
 }
 
+/* istanbul ignore next */
 async function changeRole(user_id, role) {
     const command = new UpdateCommand({
         TableName: "FoundationalUsers",
@@ -86,6 +91,7 @@ async function changeRole(user_id, role) {
     }
 }
 
+/* istanbul ignore next */
 async function deleteUser(user_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalUsers",

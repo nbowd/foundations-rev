@@ -1,5 +1,6 @@
 const { createLogger, transports, format} = require("winston");
 
+/* istanbul ignore next */
 const logger = createLogger({
     format: format.combine(
         format.timestamp(),

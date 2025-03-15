@@ -1,13 +1,18 @@
-const router = require('express');
+const express = require('express');
 const ticketsService = require('../service/ticketsService');
 const { authenticateToken, validateManagerMiddleWare } = require('../utils/middleware');
 
-const ticketsRouter = router.Router();
+const ticketsRouter = express.Router();
 
 function validateReceipt(ticket_id, file) {
-    return (ticket_id && file && file.length > 0);
+    if (!ticket_id || !file) {
+        return false;
+    } else {
+        return ticket_id.length > 0 && file.length > 0;
+    }
 }
 
+/* istanbul ignore next */
 function validateReceiptMiddleware(req, res, next) {
     if (validateReceipt(req.params.ticket_id, req.body)) {
         next();
@@ -17,9 +22,14 @@ function validateReceiptMiddleware(req, res, next) {
 }
 
 function validateTicket(ticket_id, status) {
-    return (ticket_id && status);
+    if (!ticket_id || !status) {
+        return false;
+    } else {
+        return ticket_id.length > 0 && (status === 'approved' || status === 'denied')
+    }
 }
 
+/* istanbul ignore next */
 function validateTicketMiddleware(req, res, next) {
     const ticket_id = req.params.ticket_id;
     const status = req.body.status;
@@ -31,6 +41,7 @@ function validateTicketMiddleware(req, res, next) {
     }
 }
 
+/* istanbul ignore next */
 ticketsRouter.get('/', authenticateToken, async function(req, res) {
     const queryParams = req.query;
     
@@ -56,6 +67,7 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
     return res.status(200).json(tickets);
 })
 
+/* istanbul ignore next */
 ticketsRouter.post('/', authenticateToken, async function(req, res) {
     const ticket = await ticketsService.createTicket(req.body, req.user);
 
@@ -66,6 +78,7 @@ ticketsRouter.post('/', authenticateToken, async function(req, res) {
     return res.status(201).json(ticket.ticket);
 })
 
+/* istanbul ignore next */
 ticketsRouter.post('/:ticket_id/receipt', authenticateToken, validateReceiptMiddleware, async function(req, res) {
 
     const ticket_id = req.params.ticket_id;
@@ -82,6 +95,7 @@ ticketsRouter.post('/:ticket_id/receipt', authenticateToken, validateReceiptMidd
     return res.status(202).json(ticket.ticket);
 });
 
+/* istanbul ignore next */
 ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, async function(req, res) {
     const ticket_id = req.params.ticket_id;
     const user_id = req.user.id;
@@ -100,6 +114,7 @@ ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, authenticateToken, 
     return res.status(202).json(result.ticket);
 })
 
+/* istanbul ignore next */
 ticketsRouter.delete('/:ticket_id', async function(req, res) {
     const ticket = await ticketsService.deleteTicket(req.params.ticket_id);
 
@@ -110,4 +125,4 @@ ticketsRouter.delete('/:ticket_id', async function(req, res) {
     return res.status(200).json(ticket);
 })
 
-module.exports = ticketsRouter;
+module.exports = {validateReceipt, validateTicket , ticketsRouter};

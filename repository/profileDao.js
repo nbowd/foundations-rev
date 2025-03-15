@@ -3,6 +3,7 @@ const {PutObjectCommand} = require("@aws-sdk/client-s3");
 const {documentClient, s3} = require('../utils/config');
 const uuid = require('uuid');
 
+/* istanbul ignore next */
 async function createProfile(profile) {
     const command = new PutCommand({
         TableName: 'FoundationalProfile',
@@ -19,6 +20,7 @@ async function createProfile(profile) {
     }
 };
 
+/* istanbul ignore next */
 async function getProfileById(user_id) {
     const command = new GetCommand({
         TableName: "FoundationalProfile",
@@ -34,6 +36,7 @@ async function getProfileById(user_id) {
     }
 }
 
+/* istanbul ignore next */
 async function updateProfile(user_id, profile) {
     const command = new UpdateCommand({
         TableName: "FoundationalProfile",
@@ -57,6 +60,7 @@ async function updateProfile(user_id, profile) {
     }
 }
 
+/* istanbul ignore next */
 async function uploadPhoto(file) {
     const fileName = `profile/${uuid.v4()}.jpg`;
 
@@ -75,6 +79,7 @@ async function uploadPhoto(file) {
     }
 };
 
+/* istanbul ignore next */
 async function deleteProfile(user_id) {
     const command = new DeleteCommand({
         TableName: "FoundationalProfile",

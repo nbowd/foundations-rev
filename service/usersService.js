@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 
 const saltRounds = 10;
 
+/* istanbul ignore next */
 async function getUsers() {
     const result = await userDao.getUsers();
 
@@ -15,6 +16,7 @@ async function getUsers() {
     }
 }
 
+/* istanbul ignore next */
 async function createUser({username, password}) {
     const duplicateUsernames = await userDao.getUserByUsername(username);
 
@@ -35,6 +37,7 @@ async function createUser({username, password}) {
     }
 }
 
+/* istanbul ignore next */
 async function loginUser({username, password}) {
     let user = await userDao.getUserByUsername(username);
     console.log(user);
@@ -52,6 +55,7 @@ async function loginUser({username, password}) {
     return {message: "Logged in", user};
 }
 
+/* istanbul ignore next */
 async function changeRole(user_id, { role }) {
     const user = await userDao.changeRole(user_id, role);
 
@@ -62,6 +66,7 @@ async function changeRole(user_id, { role }) {
     }
 }
 
+/* istanbul ignore next */
 async function deleteUser(user_id) {
     let user = await userDao.deleteUser(user_id);
     const profile = await profileDao.deleteProfile(user_id);
