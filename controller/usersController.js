@@ -21,7 +21,7 @@ function validateChangeRoleMiddleware(req, res, next) {
     if (validateChangeRole(user_id, role, user)) {
         next();
     } else {
-        return res.status(400).send("Missing user_id path param, role body attribute, user auth");
+        return res.status(400).json({error: "Bad Request", status: 400, message: "Missing user_id path param, role body attribute, user auth"});
     }
 }
 
@@ -35,8 +35,8 @@ usersRouter.get('/', async function(req, res) {
 usersRouter.post('/', validateUserMiddleware, async function(req, res) {
     const user = await usersService.createUser(req.body);
 
-    if (user.error == 'duplicate') {
-        return res.status(400).send(user.message);
+    if (user.error) {
+        return res.status(user.status).json(user);
     }
 
     return res.status(201).json(user.user);
@@ -46,15 +46,19 @@ usersRouter.post('/', validateUserMiddleware, async function(req, res) {
 usersRouter.patch('/:user_id', authenticateToken, validateManagerMiddleWare, validateChangeRoleMiddleware, async function(req,res) {
     const user = await usersService.changeRole(req.params.user_id, req.body)
     
-    return res.status(202).json(user.user);
+    if (user.error) {
+        return res.status(user.status).json(user);
+    }
+
+    return res.status(200).json(user.user);
 });
 
 /* istanbul ignore next */
 usersRouter.delete('/:user_id', async function(req, res) {
     const user = await usersService.deleteUser(req.params.user_id);
 
-    if (user.error == 'missing') {
-        return res.status(404).send(user.message);
+    if (user.error) {
+        return res.status(user.status).json(user);
     }
 
     return res.status(200).json(user);

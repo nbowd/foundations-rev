@@ -3,13 +3,13 @@ const profileDao = require('../repository/profileDao');
 /* istanbul ignore next */
 async function updateProfile(user_id, updates, user) {
     if (user.id !== user_id) {
-        return {error: "Forbidden", message: "Profile is not owned by requester"}
+        return {error: "Forbidden Access", status: 403, message: "Profile is not owned by requester"}
     }
 
     const oldProfile = await profileDao.getProfileById(user_id);
 
     if (!oldProfile) {
-        return {error: 'Missing', message: "Profile not found"};
+        return {error: "Bad Request", status:400, message: "Profile not found"};
     }
     const newProfile = {
         first_name: updates.first_name? updates.first_name: oldProfile.first_name,
@@ -22,7 +22,7 @@ async function updateProfile(user_id, updates, user) {
     const profile = await profileDao.updateProfile(user_id, newProfile);
 
     if (!profile) {
-        return {message: "Failed to get profile"};
+        return {error: "Bad Request", status:400, message: "Failed to get profile"};
     } else {
         return {message: "Found profile", profile}
     }
@@ -33,11 +33,11 @@ async function addPhoto(user_id, file, user) {
     const profile = await profileDao.getProfileById(user_id);
 
     if (!profile) {
-        return {error: "Missing", message: "Profile not found"}
+        return {error: "Bad Request", status:400, message: "Profile not found"}
     }
 
     if (user.id !== profile.user_id) {
-        return {error: "Forbidden", message: "Profile is not owned by requester"};
+        return {error: "Forbidden Access", status:403, message: "Profile is not owned by requester"};
     }
 
     const fileName = await profileDao.uploadPhoto(file);

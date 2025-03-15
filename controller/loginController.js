@@ -9,10 +9,10 @@ const loginRouter = express.Router();
 loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     const user = await usersService.loginUser(req.body);
 
-    if (user.error == 'username' || user.error == 'password') {
-        return res.status(400).send(user.message);
+    if (user.error) {
+        return res.status(user.status).json(user);
     }
-    
+    console.log(user);
     const token = jwt.sign(
         {
             id: user.user.user_id,

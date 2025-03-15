@@ -17,7 +17,7 @@ function validatePhotoMiddleware(req, res, next) {
     if (validatePhoto(req.params.user_id, req.body)) {
         next();
     } else {
-        return res.status(400).send("No image uploaded")
+        return res.status(400).json({error: "Bad Request", status: 400, message: "No image uploaded"});
     }
 }
 
@@ -29,15 +29,11 @@ profileRouter.patch('/:user_id', authenticateToken, async function(req, res) {
 
     const profile = await profileService.updateProfile(user_id, body, user);
 
-    if (profile.error && profile.error === 'Missing') {
-        return res.status(400).send(profile.message);
+    if (profile.error) {
+        return res.status(profile.status).json(profile);
     }
 
-    if (profile.error && profile.error === 'Forbidden') {
-        return res.status(403).send(profile.message);
-    }
-
-    return res.status(202).send(profile.profile);
+    return res.status(200).json(profile.profile);
 })
 
 /* istanbul ignore next */
@@ -47,15 +43,11 @@ profileRouter.post('/:user_id/photo', authenticateToken, validatePhotoMiddleware
 
     const profile = await profileService.addPhoto(user_id, file, req.user);
 
-    if (profile && profile.error === 'Missing') {
-        return res.status(400).send(profile.message);
+    if (profile.error) {
+        return res.status(profile.status).json(profile);
     }
 
-    if (profile && profile.error === 'Forbidden') {
-        return res.status(403).send(profile.message);
-    }
-
-    return res.status(202).json(profile.profile);
+    return res.status(200).json(profile.profile);
 });
 
 module.exports = {validatePhoto, profileRouter};

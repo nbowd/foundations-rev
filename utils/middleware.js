@@ -18,7 +18,7 @@ async function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token){
-        return res.status(401).send("Missing Authorization");
+        return res.status(401).json({error: "Unauthorized", status: 401, message: "Missing JWT Authorization"});
     } 
 
     try {
@@ -26,7 +26,7 @@ async function authenticateToken(req, res, next) {
         req.user = user;
         next();
     } catch (error) {
-        return res.status(401).send("Invalid token");
+        return res.status(401).json({error: "Unauthorized", status:401, message: "JWT token failed verification"});
     }
 }
 
@@ -45,7 +45,7 @@ function validateUserMiddleware(req, res, next) {
     if (validateUser(data)) {
         next();
     } else {
-        res.status(400).send("Missing Username or Password")
+        return res.status(400).json({error: "Bad Request", status: 400, message: "Missing or Empty Username or Password"})
     }
 }
 
@@ -60,7 +60,7 @@ function validateManagerMiddleWare(req, res, next) {
     if (validateManager(user)) {
         next();
     } else {
-        return res.status(403).send("Manager only endpoint")
+        return res.status(403).json({error: "Forbidden Access", status: 403, message: "Manager only endpoint"});
     }
 }
 

@@ -7,7 +7,7 @@ async function getTickets() {
     const result = await ticketsDao.getTickets();
 
     if (!result) {
-        return {message: "Failed to get tickets"};
+        return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
         return {message: "Found tickets", tickets: result}
     }
@@ -16,13 +16,13 @@ async function getTickets() {
 /* istanbul ignore next */
 async function getTicketsByStatus(status, user) {
     if (user.role !== 'manager') {
-        return {error: "forbidden", message: "Manager only endpoint"};
+        return {error: "Forbidden Access", status: 403, message: "Manager only endpoint"};
     }
 
     const tickets = await ticketsDao.getTicketsByStatus(status);
     
     if (!tickets) {
-        return {message: "Failed to get tickets"};
+        return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
         return {message: "Found tickets", tickets}
     }
@@ -33,7 +33,7 @@ async function getTicketsByAuthor(author) {
     const tickets = await ticketsDao.getTicketsByAuthor(author);
 
     if (!tickets) {
-        return {message: "Failed to get tickets"};
+        return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
         return {message: "Found tickets", tickets}
     }
@@ -44,24 +44,20 @@ async function getTicketsByType(type) {
     const tickets = await ticketsDao.getTicketsByType(type);
 
     if (!tickets) {
-        return {message: "Failed to get tickets"};
+        return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
         return {message: "Found tickets", tickets}
     }
 };
 
 /* istanbul ignore next */
-async function createTicket({author, description, type, amount}, user) {
-    if (author !== user.id) {
-        return {error: 'invalid', message: 'Authorized user id is not the same as author id'};
-    }
-
+async function createTicket({description, type, amount}, user) {
     const newTicket = {
         ticket_id: uuid.v4(),
         description,
         amount,
         type,
-        author,
+        author: user.id,
         resolver: "",
         status: "pending",
         receipt: ""
@@ -70,7 +66,7 @@ async function createTicket({author, description, type, amount}, user) {
     const result = await ticketsDao.createTicket(newTicket);
 
     if (!result) {
-        return {message: "Failed to create ticket"};
+        return {error: "Bad Request", status: 400, message: "Failed to create ticket"};
     } else {
         return {message: "Created ticket", ticket: result};
     }
@@ -81,23 +77,23 @@ async function changeStatus(ticket_id, user_id, status) {
     const user = await userDao.getUserById(user_id);
     
     if (!user) {
-        return {error: "invalid", message: "User id not found"};
+        return {error: "Bad Request", status:400, message: "User id not found"};
     }
 
     const ticket = await ticketsDao.getTicketsById(ticket_id);
     
     if (!ticket) {
-        return {error: "invalid", message: "Ticket id not found"};
+        return {error: "Bad Request", status:400, message: "Ticket id not found"};
     }
 
     if (ticket.status !== 'pending') {
-        return {error: "forbidden", message: "Forbidden access to edits"};
+        return {error: "Forbidden Access", status: 403, message: "Cannot edit resolved tickets"};
     }
 
     const result = await ticketsDao.changeStatus(ticket_id, user_id, status);
     
     if (!result) {
-        return {error: "invalid", message: "Ticket could not be updated"};
+        return {error: "Bad Request", status:400, message: "Ticket could not be updated"};
     }
 
     return {message: "Ticket updated", ticket: result};
@@ -108,15 +104,14 @@ async function addReceipt(ticket_id, file, user) {
     const ticket = await ticketsDao.getTicketsById(ticket_id);
 
     if (!ticket) {
-        return {error: "Missing", message: "Ticket not found"}
+        return {error: "Bad Request", status:400,  message: "Ticket not found"}
     }
 
     if (user.id !== ticket.author) {
-        return {error: "Forbidden", message: "Ticket is not owned by requester"};
+        return {error: "Forbidden Access", status: 403, message: "Ticket is not owned by requester"};
     }
 
     const fileName = await ticketsDao.uploadReceipt(file);
-
     const newTicket = await ticketsDao.updateTicket(ticket.ticket_id, fileName);
 
     return {message: "Ticket found", ticket: newTicket};
@@ -127,7 +122,7 @@ async function deleteTicket(ticket_id) {
     const user = await ticketsDao.deleteTicket(ticket_id);
 
     if (!user) {
-        return {error: 'missing', message: 'No user matching provided id'};
+        return {error: "Bad Request", status:400, message: 'No user matching provided id'};
     }
     return user;
 }

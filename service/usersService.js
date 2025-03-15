@@ -10,7 +10,7 @@ async function getUsers() {
     const result = await userDao.getUsers();
 
     if (!result) {
-        return {message: "Failed to get users"};
+        return {error: "Bad Request", status: 400, message: "Failed to get users"};
     } else {
         return {message: "Found users", users: result}
     }
@@ -21,7 +21,7 @@ async function createUser({username, password}) {
     const duplicateUsernames = await userDao.getUserByUsername(username);
 
     if (duplicateUsernames.length > 0) {
-        return {error: 'duplicate', message: "Username is already taken"};
+        return {error: 'Duplicate Username', status: 409, message: "Username is already taken"};
     }
 
     const hashPass = await bcrypt.hash(password, saltRounds);
@@ -31,7 +31,7 @@ async function createUser({username, password}) {
     const profile = await profileDao.createProfile({user_id, first_name: "", last_name: "", title: "", office_location: "", profile_picture: ""});
 
     if (!result || !profile) {
-        return {message: "Failed to create user"};
+        return {error: "Bad Request", status: 400, message: "Failed to create user"};
     } else {
         return {message: "Created user", user: result};
     }
@@ -40,16 +40,15 @@ async function createUser({username, password}) {
 /* istanbul ignore next */
 async function loginUser({username, password}) {
     let user = await userDao.getUserByUsername(username);
-    console.log(user);
     
     if (user.length == 0) {
-        return {error: 'username', message: 'Username missing or invalid'};
+        return {error: 'Unauthorized', status: 401, message: 'Username missing or invalid'};
     } else {
         user = user[0];
     }
     
     if (!await bcrypt.compare(password, user.password)) {
-        return {error: 'password', message: 'Password missing or invalid'};
+        return {error: 'Unauthorized', status: 401, message: 'Password missing or invalid'};
     }
 
     return {message: "Logged in", user};
@@ -60,7 +59,7 @@ async function changeRole(user_id, { role }) {
     const user = await userDao.changeRole(user_id, role);
 
     if (!user) {
-        return {message: "Failed to update user"};
+        return {error: "Bad Request", status: 400, message: "Failed to update user"};
     } else {
         return {message: "Updated user", user: user}
     }
@@ -72,7 +71,7 @@ async function deleteUser(user_id) {
     const profile = await profileDao.deleteProfile(user_id);
 
     if (!user || !profile) {
-        return {error: 'missing', message: 'No user matching provided id'};
+        return {error: 'Bad Request', status: 400, message: 'No user matching provided id'};
     }
     return user;
 }
