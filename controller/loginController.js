@@ -16,8 +16,6 @@ loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     const token = jwt.sign(
         {
             id: user.user.user_id,
-            username: user.user.username,
-            role: user.user.role
         },
         process.env.secretKey,
         {

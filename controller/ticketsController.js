@@ -63,7 +63,7 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
     const queryParams = req.query;
     
     if (queryParams.status) {
-        const tickets = await ticketsService.getTicketsByStatus(queryParams.status, req.user);
+        const tickets = await ticketsService.getTicketsByStatus(queryParams.status, req.user.id);
         if (tickets.error) {
             return res.status(tickets.status).json(tickets);
         }

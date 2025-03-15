@@ -14,7 +14,13 @@ async function getTickets() {
 };
 
 /* istanbul ignore next */
-async function getTicketsByStatus(status, user) {
+async function getTicketsByStatus(status, user_id) {
+    const user = await userDao.getUserById(user_id);
+
+    if (!user) {
+        return {error: "Bad Request", status: 400, message: "Failed to update user"};
+    }
+
     if (user.role !== 'manager') {
         return {error: "Forbidden Access", status: 403, message: "Manager only endpoint"};
     }

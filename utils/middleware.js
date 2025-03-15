@@ -1,3 +1,4 @@
+const userDao = require("../repository/usersDao");
 const jwt = require("jsonwebtoken");
 const logger = require("./logger");
 
@@ -54,8 +55,14 @@ function validateManager(user) {
 }
 
 /* istanbul ignore next */
-function validateManagerMiddleWare(req, res, next) {
-    const user = req.user;
+async function validateManagerMiddleWare(req, res, next) {
+    const user_id = req.user.id;
+
+    const user = await userDao.getUserById(user_id);
+
+    if (!user) {
+        return {error: "Bad Request", status: 400, message: "Failed to validate user"};
+    }
 
     if (validateManager(user)) {
         next();
