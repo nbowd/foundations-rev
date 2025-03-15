@@ -1,7 +1,8 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
 const {documentClient, s3} = require('../utils/config');
-const {PutObjectCommand, GetObjectCommand  } = require("@aws-sdk/client-s3");
+const {PutObjectCommand } = require("@aws-sdk/client-s3");
 const uuid = require('uuid');
+const logger = require('../utils/logger');
 
 /* istanbul ignore next */
 async function getTickets(){
@@ -13,7 +14,7 @@ async function getTickets(){
         const data = await documentClient.send(command);
         return data.Items;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 };
@@ -29,7 +30,7 @@ async function getTicketsById(ticket_id){
         const data = await documentClient.send(command);
         return data.Item;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 };
@@ -52,7 +53,7 @@ async function getTicketsByStatus(status) {
         const data = await documentClient.send(command);
         return data.Items;
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return null;
     }
 };
@@ -72,7 +73,7 @@ async function getTicketsByAuthor(author) {
         const data = await documentClient.send(command);
         return data.Items;
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return null;
     }
 };
@@ -95,7 +96,7 @@ async function getTicketsByType(type) {
         const data = await documentClient.send(command);
         return data.Items;
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return null;
     }
 };
@@ -111,7 +112,7 @@ async function createTicket(ticket) {
         await documentClient.send(command);
         return ticket
     } catch (error) {
-        console.log(error);
+        logger.log(error);
         return null;
     }
 }
@@ -137,7 +138,8 @@ async function changeStatus(ticket_id, user_id, status) {
         const data = await documentClient.send(command);
         return data.Attributes;
     } catch (error) {
-        console.log(error)
+        logger.log(error)
+        return null;
     }
 }
 
@@ -157,7 +159,8 @@ async function uploadReceipt(file) {
         await s3.send(command);
         return fileName;
     } catch (error) {
-        console.log(error);
+        logger.log(error);
+        return null;
     }
 };
 
@@ -177,7 +180,8 @@ async function updateTicket(ticket_id, fileName) {
         const data = await documentClient.send(command);
         return data.Attributes;
     } catch (error) {
-        console.log(error)
+        logger.log(error);
+        return null;
     }
 };
 
@@ -193,7 +197,7 @@ async function deleteTicket(ticket_id) {
         const data = await documentClient.send(command);
         return data.Attributes;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 }

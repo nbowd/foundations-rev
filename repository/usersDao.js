@@ -1,5 +1,6 @@
 const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
 const {documentClient} = require('../utils/config');
+const logger = require('../utils/logger');
 
 /* istanbul ignore next */
 async function getUsers(){
@@ -11,7 +12,7 @@ async function getUsers(){
         const data = await documentClient.send(command);
         return data.Items;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 };
@@ -31,7 +32,7 @@ async function getUserByUsername(username) {
         const data = await documentClient.send(command);
         return data.Items;
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return null;
     }
 }
@@ -47,7 +48,7 @@ async function getUserById(user_id) {
         const data = await documentClient.send(command);
         return data.Item;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 };
@@ -63,7 +64,7 @@ async function createUser(user) {
         await documentClient.send(command);
         return user
     } catch (error) {
-        console.log(error);
+        logger.log(error);
         return null;
     }
 }
@@ -87,7 +88,8 @@ async function changeRole(user_id, role) {
         const data = await documentClient.send(command);
         return data.Attributes;
     } catch (error) {
-        console.log(error)
+        logger.log(error);
+        return null;
     }
 }
 
@@ -101,10 +103,9 @@ async function deleteUser(user_id) {
 
     try{
         const data = await documentClient.send(command);
-        
         return data.Attributes;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 }

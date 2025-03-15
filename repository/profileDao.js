@@ -1,7 +1,8 @@
-const {GetCommand, PutCommand, DeleteCommand, ScanCommand, QueryCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
+const {GetCommand, PutCommand, DeleteCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
 const {PutObjectCommand} = require("@aws-sdk/client-s3");
 const {documentClient, s3} = require('../utils/config');
 const uuid = require('uuid');
+const logger = require('../utils/logger');
 
 /* istanbul ignore next */
 async function createProfile(profile) {
@@ -15,7 +16,7 @@ async function createProfile(profile) {
         const newProfile = await documentClient.send(command);
         return newProfile
     } catch (error) {
-        console.log(error);
+        logger.log(error);
         return null;
     }
 };
@@ -31,7 +32,7 @@ async function getProfileById(user_id) {
         const data = await documentClient.send(command);
         return data.Item;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 }
@@ -56,7 +57,8 @@ async function updateProfile(user_id, profile) {
         const data = await documentClient.send(command);
         return data.Attributes;
     } catch (error) {
-        console.log(error)
+        logger.log(error);
+        return null;
     }
 }
 
@@ -75,7 +77,8 @@ async function uploadPhoto(file) {
         await s3.send(command);
         return fileName;
     } catch (error) {
-        console.log(error);
+        logger.log(error);
+        return null;
     }
 };
 
@@ -89,10 +92,9 @@ async function deleteProfile(user_id) {
 
     try{
         const data = await documentClient.send(command);
-        
         return data.Attributes;
     }catch(err){
-        console.error(err);
+        logger.error(err);
         return null;
     }
 }
