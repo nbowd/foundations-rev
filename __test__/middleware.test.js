@@ -1,6 +1,6 @@
 const {validateUser, validateManager} = require("../utils/middleware");
 const { validateChangeRole } = require("../controller/usersController");
-const {validateReceipt, validateTicket} = require("../controller/ticketsController");
+const {validateReceipt, validateStatusChange, validateTicketPost} = require("../controller/ticketsController");
 const {validatePhoto} = require("../controller/profileController");
 
 const user = {
@@ -61,16 +61,26 @@ describe('validateChangeRole', () => {
         expect(result).toEqual(false);
     })
  })
-describe('validateTicket', () => { 
+describe('validateStatusChange', () => { 
     test('Correct Values', () => { 
-        let result = validateTicket(ticket.ticket_id, 'approved');
+        let result = validateStatusChange(ticket.ticket_id, 'approved');
         expect(result).toEqual(true);
      })
     test('Incorrect Values', () => { 
-        let result = validateTicket('', 'cat');
+        let result = validateStatusChange('', 'cat');
         expect(result).toEqual(false);
      })
  })
+ describe('validTicketPost', () => { 
+    test('Correct', () => { 
+        let result = validateTicketPost(ticket);
+        expect(result).toEqual(true);
+     })
+    test('Incorrect', () => { 
+        let result = validateTicketPost({});
+        expect(result).toEqual(false);
+     })
+  })
 describe('validateReceipt', () => { 
     test('Correct', () => { 
         let result = validateReceipt(ticket.ticket_id, image);

@@ -52,14 +52,6 @@ async function getTicketsByType(type) {
 
 /* istanbul ignore next */
 async function createTicket({author, description, type, amount}, user) {
-    if (!description) {
-        return {error: 'description', message: 'Description is required'};
-    }
-
-    if (!amount) {
-        return {error: 'amount', message: 'Amount is required'};
-    }
-
     if (author !== user.id) {
         return {error: 'invalid', message: 'Authorized user id is not the same as author id'};
     }

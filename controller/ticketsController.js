@@ -21,7 +21,7 @@ function validateReceiptMiddleware(req, res, next) {
     }
 }
 
-function validateTicket(ticket_id, status) {
+function validateStatusChange(ticket_id, status) {
     if (!ticket_id || !status) {
         return false;
     } else {
@@ -30,14 +30,31 @@ function validateTicket(ticket_id, status) {
 }
 
 /* istanbul ignore next */
-function validateTicketMiddleware(req, res, next) {
+function validateStatusChangeMiddleware(req, res, next) {
     const ticket_id = req.params.ticket_id;
     const status = req.body.status;
 
-    if (validateTicket(ticket_id, status)) {
+    if (validateStatusChange(ticket_id, status)) {
         next()
     } else {
         res.status(400).send("'ticket_id' path parameter, and 'status' JSON body required");
+    }
+}
+
+function validateTicketPost({amount, description}) {
+    if (!amount || !description) {
+        return false;
+    } else {
+        return amount > 0 && description.length > 0;
+    }
+}
+
+/* istanbul ignore next */
+function validateTicketPostMiddleware(req, res, next) {
+    if (validateTicketPost(req.body)) {
+        next();
+    } else {
+        return res.status(400).send("Missing/Empty amount and/or description attributes")
     }
 }
 
@@ -68,7 +85,7 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
 })
 
 /* istanbul ignore next */
-ticketsRouter.post('/', authenticateToken, async function(req, res) {
+ticketsRouter.post('/', authenticateToken, validateTicketPostMiddleware, async function(req, res) {
     const ticket = await ticketsService.createTicket(req.body, req.user);
 
     if (ticket.error) {
@@ -96,7 +113,7 @@ ticketsRouter.post('/:ticket_id/receipt', authenticateToken, validateReceiptMidd
 });
 
 /* istanbul ignore next */
-ticketsRouter.patch('/:ticket_id', validateTicketMiddleware, authenticateToken, validateManagerMiddleWare, async function(req, res) {
+ticketsRouter.patch('/:ticket_id', validateStatusChangeMiddleware, authenticateToken, validateManagerMiddleWare, async function(req, res) {
     const ticket_id = req.params.ticket_id;
     const user_id = req.user.id;
     const status = req.body.status;
@@ -125,4 +142,4 @@ ticketsRouter.delete('/:ticket_id', async function(req, res) {
     return res.status(200).json(ticket);
 })
 
-module.exports = {validateReceipt, validateTicket , ticketsRouter};
+module.exports = {validateTicketPost, validateReceipt, validateStatusChange , ticketsRouter};
