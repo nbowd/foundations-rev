@@ -64,7 +64,7 @@
             <div id="ticket-form" class="form active">
                 <h2>Create Ticket</h2>
                 <div class="form-group">
-                    <label for="ticket-type">Choose a Type:</label>
+                    <label for="ticket-type">Choose a Type*:</label>
                     <select name="ticket-type" id="ticket-type">
                         <option value="none">None</option>
                         <option value="food">Food</option>
@@ -74,14 +74,20 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="ticket-description">Description:</label>
+                    <label for="ticket-description">Description*:</label>
                     <textarea id="ticket-description" name="ticket-description" rows="3" cols="50" maxLength="60"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="ticket-amount">Amount:</label>
+                    <label for="ticket-amount">Amount*:</label>
                     <input type="number" id="ticket-amount" placeholder="Enter amount:">
                 </div>
                 <div class="form-group">
+                    <label for="ticket-file-input">Recipt: (Optional)</label>
+
+                    <input type="file" id="ticket-file-input" accept="image/jpeg" required>
+                </div>
+                <div class="form-group">
+                    <label>* = required</label>
                     <button type="button" onclick="validateTicket()">Create</button>
                     <p id="ticket-success" class="success"></p>
                     <p id="ticket-error" class="error"></p>

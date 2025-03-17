@@ -147,7 +147,7 @@ function validateCreateAccount() {
     }
 }
 
-async function createTicket(user_id, description, type, amount ) {
+async function createTicket(user_id, description, type, amount, file ) {
     try {
         const requestData = {
             author: user_id,
@@ -163,13 +163,31 @@ async function createTicket(user_id, description, type, amount ) {
                 }
             }
         );
-        if (res.status == 201) {
+        if (res.status != 201) return;
+
+        if (!file) {
             document.getElementById('ticket-success').textContent = 'Ticket Created';
             await getTableData();
             ticketDialog.close();
-        } 
+            return;
+        }
+
+        const response = await axios.post(`${baseUrl}/tickets/${res.data.ticket_id}/receipt`, file, {
+            headers: {
+                "Content-Type": "image/jpeg",
+                Authorization: "Bearer " + token
+            }
+        })
+        if (response.status == 202) {
+            document.getElementById('ticket-success').textContent = 'Ticket Created';
+            const filterType = document.querySelector("#filter-ticket-type");
+            filterType.value = 'none';
+            await getTableData();
+            ticketDialog.close();
+        }
     } catch (error) {
         console.log(error);
+        document.getElementById('ticket-error').textContent = error.response.data.message;
     }
 }
 
@@ -177,6 +195,9 @@ function validateTicket() {
     const description = document.getElementById('ticket-description').value;
     const type = document.getElementById('ticket-type').value;
     const amount = document.getElementById('ticket-amount').value;
+    const fileInput =document.getElementById('ticket-file-input');
+
+    const file = fileInput.files[0];
 
     document.getElementById('ticket-error').textContent = '';
     document.getElementById('ticket-success').textContent = '';
@@ -193,7 +214,16 @@ function validateTicket() {
         document.getElementById('ticket-error').textContent = 'Please enter a valid amount.';
         return;
     }
-    createTicket(user.user_id, description, type, amount);
+
+    if (file && file.type !== "image/jpeg") {
+        document.getElementById('ticket-error').textContent = 'Invalid file type. image/jpeg only.';
+        return;
+    };
+    if (file && file.size > 5 * 1024 * 1024) {
+        document.getElementById('ticket-error').textContent = 'Invalid file size. 5MB or less.';
+        return;
+    };
+    createTicket(user.user_id, description, type, amount, file);
 }
 
 
