@@ -1,6 +1,30 @@
 const profileDao = require('../repository/profileDao');
 
 /* istanbul ignore next */
+async function getSignedUrlForImage(fileKey, bucket) {
+    if (!fileKey || fileKey.length == 0) {
+        return {error: "Bad Request", status:400, message: "Missing file key."};
+    }
+    if (!bucket || bucket.length == 0) {
+        return {error: "Bad Request", status:400, message: "Missing bucket name."};
+    }
+
+    const signedUrl = await profileDao.getSignedUrlForImage(fileKey, bucket);
+
+    if (!signedUrl) {
+        return {error: "Bad Request", status:400, message: "Failed to get signedURL"};
+    } else {
+        return {message: "Found profile picture", signedUrl};
+    }
+}
+
+/* istanbul ignore next */
+async function getProfileById(user_id) {
+    const profile = await profileDao.getProfileById(user_id);
+    return profile;
+}
+
+/* istanbul ignore next */
 async function updateProfile(user_id, updates, user) {
     if (user.id !== user_id) {
         return {error: "Forbidden Access", status: 403, message: "Profile is not owned by requester"}
@@ -47,4 +71,4 @@ async function addPhoto(user_id, file, user) {
     return {message: "Profile found", profile: newProfile};
 };
 
-module.exports = { updateProfile, addPhoto };
+module.exports = { updateProfile, addPhoto, getSignedUrlForImage, getProfileById };

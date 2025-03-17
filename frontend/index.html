@@ -83,7 +83,6 @@
                 </div>
                 <div class="form-group">
                     <label for="ticket-file-input">Recipt: (Optional)</label>
-
                     <input type="file" id="ticket-file-input" accept="image/jpeg" required>
                 </div>
                 <div class="form-group">
@@ -95,43 +94,132 @@
             </div>
         </div>
     </dialog>
-        <main>
-            <div id="table-header">
-                <div id="head-text">
-                    <h1>Tickets</h1>
+    <dialog id="change-role-dialog">
+        <div class="container">
+            <button id="change-role-dialog-close">&times</button>
+            <!-- Ticket Form -->
+            <div id="change-role-form" class="form active">
+                <h2>Change Employee Role</h2>
+                <div class="form-group">
+                    <label for="change-role-employee">Employee ID*:</label>
+                    <textarea id="change-role-employee" name="change-role-employee" rows="3" cols="50" maxLength="60"></textarea>
                 </div>
-                <div id="filter-type">
-                    <label for="filter-ticket-type">Filter by Type:</label>
-                    <select name="filter-ticket-type" id="filter-ticket-type">
+                <div class="form-group">
+                    <label for="change-role-role">Choose a Role*:</label>
+                    <select name="change-role-role" id="change-role-role">
                         <option value="none">None</option>
-                        <option value="food">Food</option>
-                        <option value="travel">Travel</option>
-                        <option value="lodging">Lodging</option>
-                        <option value="other">Other</option>
+                        <option value="manager">Manager</option>
+                        <option value="employee">Employee</option>
                     </select>
                 </div>
-                <div id="add-button">
+
+                <div class="form-group">
+                    <label>* = required</label>
+                    <button type="button" onclick="validateChangeRole()">Submit</button>
+                    <p id="change-role-success" class="success"></p>
+                    <p id="change-role-error" class="error"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="profile-dialog">
+        <div class="container">
+            <button id="profile-dialog-close">&times</button>
+            <!-- Ticket Form -->
+            <div id="profile-form" class="form active">
+                <h2>Edit Profile</h2>
+
+                <div class="form-group">
+                    <label for="profile-first">First Name:</label>
+                    <input type="text" id="profile-first" placeholder="Enter your first name">
+                </div>
+                <div class="form-group">
+                    <label for="profile-last">Last Name:</label>
+                    <input type="text" id="profile-last" placeholder="Enter your last name">
+                </div>
+                <div class="form-group">
+                    <label for="profile-title">Choose a Role:</label>
+                    <select name="profile-title" id="profile-title">
+                        <option value="none">None</option>
+                        <option value="software engineer">Software Engineer</option>
+                        <option value="quality assurance">Quality Assurance</option>
+                        <option value="devops">DevOps</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="profile-location">Choose an Office Location:</label>
+                    <select name="profile-location" id="profile-location">
+                        <option value="none">None</option>
+                        <option value="seattle">Seattle</option>
+                        <option value="los angeles">Los Angeles</option>
+                        <option value="new york">New York</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="profile-file-input">Profile Picture:</label>
+                    <input type="file" id="profile-file-input" accept="image/jpeg" required>
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="validateProfile()">Update</button>
+                    <p id="profile-success" class="success"></p>
+                    <p id="profile-error" class="error"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+        <main>
+            <div class="profile">
+                <div class="upload-controls">
+                    <img class="profile-picture" src="../frontend/images/default-profile.jpg" alt="profile picture for user">
+                    <div class="profile-info">
+                        <p class="profile-name">Name</p>
+                        <p class="profile-title">Title</p>
+                        <p class="profile-location">Location</p>
+                    </div>
+                    <button id="profile-button" >Edit Profile</button>
+                </div>
+                <div class="profile-controls">
+                    <button id="change-role-button">Promote/Demote</button>
                     <button id="login-button">Login/Register</button>
                 </div>
             </div>
-            <!-- Table with headers -->
-            <table id="table">
-                <thead>
-                <tr id='trHead'>
-                    <th>Ticket ID</th>
-                    <th>Author</th>
-                    <th>Description</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Receipt</th>
-                    <th>Resolver</th>
-                    <th>Status</th>
-                    <th><button" id="ticket-button">New Ticket</button></th>
-                </tr>
-                </thead>
-                <!-- tbody for DOM to manipulate -->
-                <tbody id="tbody"></tbody>
-            </table>
+            <div class="table">
+                <div id="table-header">
+                    <div id="head-text">
+                        <h1>Tickets</h1>
+                    </div>
+                    <div id="filter-type">
+                        <label for="filter-ticket-type">Filter by Type:</label>
+                        <select name="filter-ticket-type" id="filter-ticket-type">
+                            <option value="none">None</option>
+                            <option value="food">Food</option>
+                            <option value="travel">Travel</option>
+                            <option value="lodging">Lodging</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Table with headers -->
+                <table id="table">
+                    <thead>
+                    <tr id='trHead'>
+                        <th>Ticket ID</th>
+                        <th>Author</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Receipt</th>
+                        <th>Resolver</th>
+                        <th>Status</th>
+                        <th><button" id="ticket-button">New Ticket</button></th>
+                    </tr>
+                    </thead>
+                    <!-- tbody for DOM to manipulate -->
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
         </main>
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script src="script.js"></script>

@@ -1,6 +1,7 @@
 const baseUrl = `http://localhost:8080`;
 let user;
 let token;
+let profile;
 
 // MODALS
 const loginDialog = document.querySelector("#login-dialog");
@@ -25,7 +26,7 @@ loginCloseButton.addEventListener("mousedown", (event) => {
     loginDialog.close();
     
 });
-// MODALS
+
 const ticketDialog = document.querySelector("#ticket-dialog");
 const ticketShowButton = document.querySelector("#ticket-button");
 const ticketCloseButton = document.querySelector("#ticket-dialog-close");
@@ -48,6 +49,205 @@ ticketCloseButton.addEventListener("mousedown", (event) => {
     ticketDialog.close();
 });
 
+const changeRoleDialog = document.querySelector("#change-role-dialog");
+const changeRoleShowButton = document.querySelector("#change-role-button");
+const changeRoleCloseButton = document.querySelector("#change-role-dialog-close");
+
+// "Show the changeRoleDialog" button opens the changeRoleDialog modally
+changeRoleShowButton.addEventListener("mousedown", () => {
+  changeRoleDialog.showModal();
+});
+
+// Clicking outside of element closes the changeRoleDialog
+changeRoleDialog.addEventListener("mousedown", (event) => {
+
+    if (event.target == changeRoleDialog) {
+        changeRoleDialog.close();
+    }
+});
+
+// "Close" button closes the changeRoleDialog
+changeRoleCloseButton.addEventListener("mousedown", (event) => {
+    changeRoleDialog.close();
+});
+
+const profileDialog = document.querySelector("#profile-dialog");
+const profileShowButton = document.querySelector("#profile-button");
+const profileCloseButton = document.querySelector("#profile-dialog-close");
+
+// "Show the profileDialog" button opens the profileDialog modally
+profileShowButton.addEventListener("mousedown", () => {
+  profileDialog.showModal();
+});
+
+// Clicking outside of element closes the profileDialog
+profileDialog.addEventListener("mousedown", (event) => {
+
+    if (event.target == profileDialog) {
+        profileDialog.close();
+    }
+});
+
+// "Close" button closes the profileDialog
+profileCloseButton.addEventListener("mousedown", (event) => {
+    profileDialog.close();
+});
+
+
+
+
+
+
+// PROFILE
+function toggleUpload(view) {
+    console.log(view)
+    if (view === 'upload') {
+        document.getElementById('profile-upload').classList.add('active');
+        document.getElementById('toggle-upload-input').classList.remove('active');
+    } else {
+        document.getElementById('toggle-upload-input').classList.add('active');
+        document.getElementById('profile-upload').classList.remove('active');
+    }
+}
+
+async function changeRole(employee_id, role) {
+    const successMsg = document.getElementById('change-role-success');
+    const errorMsg = document.getElementById('change-role-error');
+    try {
+        const res = await axios.patch(`${baseUrl}/users/${employee_id}`, { role }, {
+            headers: {
+                Authorization: "Bearer " + token,
+                'Content-Type': 'application/json'
+            }
+        })
+        if (res.status == 200) {
+            successMsg.textContent = 'Role successfully changed';
+            setTimeout(() => {
+                changeRoleDialog.close();
+            }, 2000);
+        }
+    } catch (error) {
+        errorMsg.textContent = error.response.data.message;
+    }
+}
+
+function validateChangeRole() {
+    const employee_id = document.getElementById('change-role-employee').value;
+    const role = document.getElementById('change-role-role').value;
+    const successMsg = document.getElementById('change-role-success')
+    const errorMsg = document.getElementById('change-role-error')
+    
+    successMsg.textContent = '';
+    errorMsg.textContent = '';
+    // Clear previous errors
+
+    if (user.role != 'manager') {
+        errorMsg.textContent = 'Manager Access Only'
+    }
+
+    if (!employee_id || employee_id.length == 0){
+        errorMsg.textContent = "Missing or invalid employee ID."
+        return;
+    }
+
+    if (role == 'none') {
+        errorMsg.textContent = "Valid role is required."
+        return;
+    }
+
+    changeRole(employee_id.trim(), role);
+}
+
+async function updateProfile(updateObject, file) {
+    try {
+        const res = await axios.patch(`${baseUrl}/profile/${user.user_id}`, updateObject, {
+            headers: {
+                Authorization: "Bearer " + token,
+                'Content-Type': 'application/json' 
+            }
+        })
+
+        if (res.status != 200) return;
+        console.log(res.data)
+        profile = res.data;
+        document.getElementById('profile-success').textContent = 'Profile updated';
+        if (!file) return;
+        const response = await axios.post(`${baseUrl}/profile/${user.user_id}/photo`, file, {
+            headers: {
+                "Content-Type": "image/jpeg",
+                Authorization: "Bearer " + token
+            }
+        })
+
+        
+        if (response.status != 200) return;
+        profile = response.data;
+        document.getElementById('profile-success').textContent = 'Profile updated';
+    } catch (error) {
+        console.log(error)
+        document.getElementById('profile-error').textContent = error.response.data.message;
+    }
+}
+
+async function validateProfile() {
+    const first_name = document.getElementById('profile-first').value;
+    const last_name = document.getElementById('profile-last').value;
+    const office_location = document.getElementById('profile-location').value;
+    const title = document.getElementById('profile-title').value;
+    const fileInput = document.getElementById('profile-file-input');
+
+    document.getElementById('profile-success').textContent = '';
+    document.getElementById('profile-error').textContent = '';
+
+
+    const file = fileInput.files[0];
+    if (file && file.type !== "image/jpeg") {
+        document.getElementById('profile-error').textContent = 'Invalid file type. image/jpeg only.';
+        return;
+    };
+    if (file && file.size > 5 * 1024 * 1024) {
+        document.getElementById('profile-error').textContent = 'Invalid file size. 5MB or less.';
+        return;
+    }
+    // const updateObject = {
+    //     first_name: first_name? first_name: profile.first_name,
+    //     last_name: last_name? last_name: profile.last_name,
+    //     office_location: office_location && office_location != 'none'? office_location: profile.office_location,
+    //     title: title && title != 'none'? title: profile.title
+    // };
+    const updateObject = {};
+    if (first_name) {
+        updateObject.first_name = first_name;
+    }
+    if (last_name) {
+        updateObject.last_name = last_name;
+    }
+    if (office_location && office_location != 'none') {
+        updateObject.office_location = office_location;
+    }
+    if (title && title != 'none') {
+        updateObject.title = title;
+    }
+    await updateProfile(updateObject, file);
+    // console.log('updated? profile', profile);
+    await setProfile(profile);
+}
+
+async function setProfile(profile){
+    // console.log('set profile',profile)
+    document.querySelector(".profile-name").textContent = `${profile.first_name} ${profile.last_name}`;
+    document.querySelector(".profile-title").textContent = profile.title;
+    document.querySelector(".profile-location").textContent = profile.office_location;
+    
+    if (profile.profile_picture) {
+        const response = await axios.get(`${baseUrl}/profile?key_id=${profile.profile_picture}`,{
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        });
+        document.querySelector(".profile-picture").src = response.data.signedUrl.signedUrl;
+    }
+}
 
 // LOGIN
 function toggleForm(form) {
@@ -92,13 +292,16 @@ async function login(email, password) {
         if (res.status == 200) {
             user = res.data.user;
             token = res.data.token;
+            profile = res.data.user.profile;
+            // console.log('login profile', profile);
+            await setProfile(profile);
             document.getElementById('login-success').textContent = "Login Successful";
             await getTableData();
             loginDialog.close();
         }
     } catch (error) {
         console.log(error)
-        document.getElementById('login-error').textContent = error.response.data.message;
+        // document.getElementById('login-error').textContent = error.response.data.message;
     }
 }
 

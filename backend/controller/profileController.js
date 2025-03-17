@@ -22,6 +22,19 @@ function validatePhotoMiddleware(req, res, next) {
 }
 
 /* istanbul ignore next */
+profileRouter.get('/', authenticateToken, async function (req, res) {
+    const key_id = req.query.key_id;
+
+    const signedUrl = await profileService.getSignedUrlForImage(key_id, 'foundational-profile');
+
+    if (signedUrl.error) {
+        return res.status(signedUrl.status).json(signedUrl);
+    }
+
+    return res.status(200).json({signedUrl});
+})
+
+/* istanbul ignore next */
 profileRouter.patch('/:user_id', authenticateToken, async function(req, res) {
     const user_id = req.params.user_id;
     const body = req.body;

@@ -10,7 +10,62 @@
 ::backdrop {
     background: rgba(0,0,0,.7);
   }
-  
+
+.profile {
+    height: 100%;
+    width: 15%;
+    background-color: #001324;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.profile img {
+    border-radius: 150px;
+    margin-top: 3rem;
+    height: 9rem;
+    width: 9rem;
+}
+
+.profile-info {
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+    text-transform: capitalize;
+}
+
+.profile-controls {
+    padding-bottom: 2rem;;
+}
+
+.upload-controls, .profile-info, .profile-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.table {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 7rem;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}  
+
 dialog {
     margin: 0; /* `margin: auto;` is the default. */
     transform: translateX(-50%);
@@ -48,7 +103,7 @@ dialog {
     cursor:default;
 }
 
-#login-dialog-close, #ticket-dialog-close {
+#login-dialog-close, #ticket-dialog-close, #change-role-dialog-close, #profile-dialog-close {
     position: absolute;
     right: 1rem;
     top: 0rem;
@@ -60,7 +115,7 @@ dialog {
     border: 0 solid transparent;
   }
   
-#login-dialog-close:hover, #ticket-dialog-close:hover, dialog {
+#login-dialog-close:hover, #ticket-dialog-close:hover, #change-role-dialog-close:hover, #profile-dialog-close:hover, dialog {
     cursor: pointer;
 }
 
@@ -144,7 +199,7 @@ h2 {
     color: #ffffff;
 }
 
-#ticket-description {
+#ticket-description, #change-role-employee {
     padding:.5rem;
 }
 
@@ -177,12 +232,7 @@ body {
     background-color: #01203c;
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+
 table {
     border-collapse: collapse;
     box-shadow: 0 5px 10px #013668;
@@ -230,14 +280,14 @@ tr:nth-child(even){
     background-color: #001c36;
 }
 
-.edit-btn, .status-label, #ticket-button, #login-button{
+.edit-btn, .status-label, #ticket-button, #login-button, #profile-button, #change-role-button, #upload-submit{
     padding: 2px 5px;
     margin: 1px;
     border: solid 1px black;
     border-radius: 4px;
     color: white;
     background-color: #626ee3;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 #ticket-button {
@@ -245,10 +295,18 @@ tr:nth-child(even){
     padding:.5rem;
 }
 
-#ticket-button:hover {
+#ticket-button:hover, #login-button:hover, #profile-button:hover,#change-role-button:hover, #upload-submit:hover {
     cursor:pointer;
 }
 
+#change-role-button {
+    margin-bottom: 2rem;
+}
+
+#change-role-button, #login-button, #profile-button {
+    width: 8rem;
+    height: 2rem;
+}
 .approve-btn {
     color: white;
     background-color: #008529;

@@ -50,7 +50,8 @@ async function loginUser({username, password}) {
     if (!await bcrypt.compare(password, user.password)) {
         return {error: 'Unauthorized', status: 401, message: 'Password missing or invalid'};
     }
-
+    const profile = await profileDao.getProfileById(user.user_id);
+    user.profile = profile;
     return {message: "Logged in", user};
 }
 

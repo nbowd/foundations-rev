@@ -1,5 +1,6 @@
 const {GetCommand, PutCommand, DeleteCommand, UpdateCommand} = require("@aws-sdk/lib-dynamodb")
-const {PutObjectCommand} = require("@aws-sdk/client-s3");
+const {PutObjectCommand, GetObjectCommand} = require("@aws-sdk/client-s3");
+const  { getSignedUrl } =  require("@aws-sdk/s3-request-presigner");
 const {documentClient, s3} = require('../utils/config');
 const uuid = require('uuid');
 const logger = require('../utils/logger');
@@ -35,6 +36,16 @@ async function getProfileById(user_id) {
         logger.error(err);
         return null;
     }
+}
+
+/* istanbul ignore next */
+async function getSignedUrlForImage(fileKey, bucket) {
+    const command = new GetObjectCommand({
+        Bucket: bucket,
+        Key: fileKey,
+      });
+    
+      return await getSignedUrl(s3, command, { expiresIn: 3600 }); // 1-hour access
 }
 
 /* istanbul ignore next */
@@ -99,4 +110,4 @@ async function deleteProfile(user_id) {
     }
 }
 
-module.exports = { createProfile, deleteProfile, updateProfile, getProfileById, uploadPhoto };
+module.exports = { createProfile, deleteProfile, updateProfile, getProfileById, uploadPhoto, getSignedUrlForImage };
