@@ -1,0 +1,258 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Raleway;
+}
+
+::backdrop {
+    background: rgba(0,0,0,.7);
+  }
+  
+dialog {
+    margin: 0; /* `margin: auto;` is the default. */
+    transform: translateX(-50%);
+    top: 30%;
+    left: 50%;
+    border: 1px solid #1e1e1e;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 360px;
+    transition: all 0.3s ease;
+}
+
+#login-button {
+    width: 7rem;
+    height: 2rem;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    cursor:default;
+}
+
+#login-dialog-close, #ticket-dialog-close {
+    position: absolute;
+    right: 1rem;
+    top: 0rem;
+    align-self: flex-end;
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    background-color:transparent;
+    border: 0 solid transparent;
+  }
+  
+#login-dialog-close:hover, #ticket-dialog-close:hover, dialog {
+    cursor: pointer;
+}
+
+h2 {
+    text-align: center;
+    color: #f1f1f1;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    }
+
+.form {
+    display: none;
+}
+
+.form.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-group input {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background-color: #333;
+    color: #f1f1f1;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #626ee3;
+    outline: none;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 12px;
+    background-color: #626ee3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-group button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.form-group button:active {
+    transform: scale(1);
+}
+
+.toggle-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+    color: #83bfff;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.toggle-link:hover {
+    text-decoration: underline;
+    color: #ffffff;
+}
+
+#ticket-description {
+    padding:.5rem;
+}
+
+#login-error {
+    padding-top: .7rem;
+    text-align: center;
+}
+
+.success {
+    color: #45a049;
+}
+
+.error {
+    color: red;
+}
+
+.success, .error {
+    font-size: 16px;
+    margin-top: 5px;
+    text-align: center;
+    padding-top: .5rem;
+}
+body {
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    font-size: 0.9rem;
+    background-color: #01203c;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+table {
+    border-collapse: collapse;
+    box-shadow: 0 5px 10px #013668;
+    background-color: #001528;
+    text-align: left;
+    overflow: hidden;
+    border-radius: 12px;
+    table-layout: fixed;
+}
+
+#table-header {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+#table-header, table {
+    width: 60%;
+}
+thead {
+    width: 100%;
+    background-color: #15314b;
+}
+
+th {
+    padding: 1rem .75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+td {
+    padding: 1rem .75rem;
+    overflow: break-word;
+    text-overflow: break-word;
+    
+}
+
+td:last-child, th:last-child {
+    width: 10rem;
+}
+
+tr:nth-child(even){
+    background-color: #001c36;
+}
+
+.edit-btn, .status-label, #ticket-button, #login-button{
+    padding: 2px 5px;
+    margin: 1px;
+    border: solid 1px black;
+    border-radius: 4px;
+    color: white;
+    background-color: #626ee3;
+    font-weight: 600;
+}
+
+#ticket-button {
+    text-transform:capitalize;
+    padding:.5rem;
+}
+
+#ticket-button:hover {
+    cursor:pointer;
+}
+
+.approve-btn {
+    color: white;
+    background-color: #008529;
+  }
+.deny-btn {
+    color: white;
+    background-color: #ff0000;
+}
+.close-btn {
+    color: white;
+    background-color: #7e8286;
+}
+
+@media (max-width: 1600px) {
+    #table-header, table {
+        width: 90%;
+    }
+}

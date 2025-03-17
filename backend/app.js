@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('./utils/logger');
 
@@ -14,6 +15,7 @@ function loggerMiddleware(req, res, next){
 }
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 app.use(express.raw({ type: "image/*", limit: "5mb" })); // Accept raw binary image data
 app.use(loggerMiddleware);

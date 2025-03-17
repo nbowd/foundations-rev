@@ -79,16 +79,18 @@ async function getTicketsByAuthor(author) {
 };
 
 /* istanbul ignore next */
-async function getTicketsByType(type) {
+async function getTicketsByType(author, type) {
     const command = new QueryCommand({
         TableName: "FoundationalTickets",
-        IndexName: "type-index",
-        KeyConditionExpression: "#t = :type",
+        IndexName: "author-type-index",
+        KeyConditionExpression: "#t = :type AND #a = :author",
         ExpressionAttributeNames: {
-            "#t": "type"
+            "#t": "type",
+            "#a": "author"
         },
         ExpressionAttributeValues: {
-            ":type": type
+            ":type": type,
+            ":author": author
         }
     })
 

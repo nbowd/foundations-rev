@@ -69,17 +69,17 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
         }
         return res.status(200).json(tickets.tickets);
     }
-
-    if (queryParams.author) {
-        const tickets = await ticketsService.getTicketsByAuthor(queryParams.author);
+    
+    if (queryParams.type) {
+        const tickets = await ticketsService.getTicketsByType(queryParams.author, queryParams.type);
         if (tickets.error) {
             return res.status(tickets.status).json(tickets);
         }
         return res.status(200).json(tickets.tickets);
     }
 
-    if (queryParams.type) {
-        const tickets = await ticketsService.getTicketsByType(queryParams.type);
+    if (queryParams.author) {
+        const tickets = await ticketsService.getTicketsByAuthor(queryParams.author);
         if (tickets.error) {
             return res.status(tickets.status).json(tickets);
         }

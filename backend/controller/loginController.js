@@ -12,7 +12,6 @@ loginRouter.post('/', validateUserMiddleware, async function(req, res) {
     if (user.error) {
         return res.status(user.status).json(user);
     }
-    console.log(user);
     const token = jwt.sign(
         {
             id: user.user.user_id,
@@ -23,7 +22,7 @@ loginRouter.post('/', validateUserMiddleware, async function(req, res) {
         }
     );
 
-    return res.status(201).json({user: user.user, token});
+    return res.status(200).json({user: user.user, token});
 })
 
 module.exports = {loginRouter};

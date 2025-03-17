@@ -46,8 +46,8 @@ async function getTicketsByAuthor(author) {
 };
 
 /* istanbul ignore next */
-async function getTicketsByType(type) {
-    const tickets = await ticketsDao.getTicketsByType(type);
+async function getTicketsByType(author, type) {
+    const tickets = await ticketsDao.getTicketsByType(author, type);
 
     if (!tickets) {
         return {error: "Bad Request", status: 400, message: "Failed to get tickets"};

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+
+  <link rel="stylesheet" href="style.css">
+  <title>Tickets</title>
+</head>
+
+<body>
+    <dialog id="login-dialog">
+        <div class="container">
+            <button autofocus id="login-dialog-close">&times</button>
+            <!-- Login Form -->
+            <div id="login-form" class="form active">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                    <p id="login-success" class="success"></p>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                    <p id="login-error" class="error"></p>
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="validateLogin()">Login</button>
+                </div>
+                <a href="javascript:void(0);" class="toggle-link" onclick="toggleForm('create-account')">Don't have an account? Create one</a>
+            </div>
+      
+          <!-- Create Account Form -->
+            <div id="create-account-form" class="form">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <label for="create-email">Email:</label>
+                <input type="email" id="create-email" placeholder="Enter your email">
+                <p id="create-success" class="success"></p>
+            </div>
+            <div class="form-group">
+                <label for="create-password">Password:</label>
+                <input type="password" id="create-password" placeholder="Enter your password">
+                <p id="create-error" class="error"></p>
+            </div>
+            <div class="form-group">
+                <label for="create-password-confirm">Confirm Password:</label>
+                <input type="password" id="create-password-confirm" placeholder="Confirm your password">
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="validateCreateAccount()">Create Account</button>
+            </div>
+            <a href="javascript:void(0);" class="toggle-link" onclick="toggleForm('login')">Already have an account? Login</a>
+            </div>
+        </div>
+    </dialog>
+    <dialog id="ticket-dialog">
+        <div class="container">
+            <button id="ticket-dialog-close">&times</button>
+            <!-- Ticket Form -->
+            <div id="ticket-form" class="form active">
+                <h2>Create Ticket</h2>
+                <div class="form-group">
+                    <label for="ticket-type">Choose a Type:</label>
+                    <select name="ticket-type" id="ticket-type">
+                        <option value="none">None</option>
+                        <option value="food">Food</option>
+                        <option value="travel">Travel</option>
+                        <option value="lodging">Lodging</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticket-description">Description:</label>
+                    <textarea id="ticket-description" name="ticket-description" rows="3" cols="50" maxLength="60"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ticket-amount">Amount:</label>
+                    <input type="number" id="ticket-amount" placeholder="Enter amount:">
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="validateTicket()">Create</button>
+                    <p id="ticket-success" class="success"></p>
+                    <p id="ticket-error" class="error"></p>
+                </div>
+            </div>
+        </div>
+    </dialog>
+        <main>
+            <div id="table-header">
+                <div id="head-text">
+                <h1>Tickets</h1>
+                </div>
+                <div id="add-button">
+                <button id="login-button">Login/Register</button>
+                
+                </div>
+            </div>
+            <!-- Table with headers -->
+            <table id="table">
+                <thead>
+                <tr id='trHead'>
+                    <th>Ticket ID</th>
+                    <th>Author</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Receipt</th>
+                    <th>Resolver</th>
+                    <th>Status</th>
+                    <th><button" id="ticket-button">New Ticket</button></th>
+                </tr>
+                </thead>
+                <!-- tbody for DOM to manipulate -->
+                <tbody id="tbody"></tbody>
+            </table>
+        </main>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="script.js"></script>
+    </body>
+    
+    </html>
