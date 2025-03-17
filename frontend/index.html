@@ -20,17 +20,17 @@
                 <div class="form-group">
                     <label for="login-email">Email:</label>
                     <input type="email" id="login-email" placeholder="Enter your email">
-                    <p id="login-success" class="success"></p>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password:</label>
                     <input type="password" id="login-password" placeholder="Enter your password">
-                    <p id="login-error" class="error"></p>
                 </div>
                 <div class="form-group">
                     <button type="button" onclick="validateLogin()">Login</button>
                 </div>
                 <a href="javascript:void(0);" class="toggle-link" onclick="toggleForm('create-account')">Don't have an account? Create one</a>
+                <p id="login-success" class="success"></p>
+                <p id="login-error" class="error"></p>
             </div>
       
           <!-- Create Account Form -->
@@ -39,12 +39,10 @@
             <div class="form-group">
                 <label for="create-email">Email:</label>
                 <input type="email" id="create-email" placeholder="Enter your email">
-                <p id="create-success" class="success"></p>
             </div>
             <div class="form-group">
                 <label for="create-password">Password:</label>
                 <input type="password" id="create-password" placeholder="Enter your password">
-                <p id="create-error" class="error"></p>
             </div>
             <div class="form-group">
                 <label for="create-password-confirm">Confirm Password:</label>
@@ -54,6 +52,8 @@
                 <button type="button" onclick="validateCreateAccount()">Create Account</button>
             </div>
             <a href="javascript:void(0);" class="toggle-link" onclick="toggleForm('login')">Already have an account? Login</a>
+            <p id="create-success" class="success"></p>
+            <p id="create-error" class="error"></p>
             </div>
         </div>
     </dialog>
@@ -92,11 +92,20 @@
         <main>
             <div id="table-header">
                 <div id="head-text">
-                <h1>Tickets</h1>
+                    <h1>Tickets</h1>
+                </div>
+                <div id="filter-type">
+                    <label for="filter-ticket-type">Filter by Type:</label>
+                    <select name="filter-ticket-type" id="filter-ticket-type">
+                        <option value="none">None</option>
+                        <option value="food">Food</option>
+                        <option value="travel">Travel</option>
+                        <option value="lodging">Lodging</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
                 <div id="add-button">
-                <button id="login-button">Login/Register</button>
-                
+                    <button id="login-button">Login/Register</button>
                 </div>
             </div>
             <!-- Table with headers -->

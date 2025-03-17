@@ -14,7 +14,6 @@ loginShowButton.addEventListener("mousedown", () => {
 
 // Clicking outside of element closes the loginDialog
 loginDialog.addEventListener("mousedown", (event) => {
-    console.log('here')
 
     if (event.target == loginDialog) {
         loginDialog.close();
@@ -23,8 +22,6 @@ loginDialog.addEventListener("mousedown", (event) => {
 
 // "Close" button closes the loginDialog
 loginCloseButton.addEventListener("mousedown", (event) => {
-    console.log('there')
-
     loginDialog.close();
     
 });
@@ -111,15 +108,17 @@ async function createUser(email, password) {
             username: email,
             password
         })
-
+        console.log(res)
         if (res.status != 201) {
             document.getElementById('create-error').textContent = 'User could not be created.';
             return;
         }
 
         await login(email, password);
+        document.getElementById('create-success').textContent = 'Account created successfully!';
+
     } catch (error) {
-        
+        document.getElementById('create-error').textContent = error.response.data.message;
     }
 }
 
@@ -145,7 +144,6 @@ function validateCreateAccount() {
 
     if (valid) {
         createUser(email, password);
-        document.getElementById('create-success').textContent = 'Account created successfully!';
     }
 }
 
@@ -182,13 +180,13 @@ function validateTicket() {
 
     document.getElementById('ticket-error').textContent = '';
     document.getElementById('ticket-success').textContent = '';
-
-    if (!description || description.length == 0) {
-        document.getElementById('ticket-error').textContent = 'Please enter a valid description.';
-        return;
-    }
+    
     if (!type || type == 'none') {
         document.getElementById('ticket-error').textContent = 'Please choose a valid type.';
+        return;
+    }
+    if (!description || description.length == 0) {
+        document.getElementById('ticket-error').textContent = 'Please enter a valid description.';
         return;
     }
     if (!amount || amount <= 0) {
@@ -225,7 +223,28 @@ async function getTableData() {
         console.log(error);
     }
 
-    console.log('tickets',tickets)
+    if (tickets.length == 0) return;
+    document.querySelector('#tbody').innerHTML = "";
+    for (let ticket of tickets) {
+        makeRow(ticket);
+    }
+}
+
+async function getTableDataByType(type) {
+    if (!user || !token || user.role != 'employee') return;
+    let tickets = [];
+
+    try {
+        const res = await axios.get(`${baseUrl}/tickets?type=${type}&author=${user.user_id}`, {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        });
+        tickets = res.data;
+    } catch (error) {
+        console.log(error);
+    }
+
     if (tickets.length == 0) return;
     document.querySelector('#tbody').innerHTML = "";
     for (let ticket of tickets) {
@@ -243,6 +262,34 @@ async function resolveTicket(ticket_id, status) {
         if (res.status == 202) {
             await getTableData();
         } 
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function uploadReceipt(id) {
+    const result = id.split('upload');
+    const ticket_id = result[1];
+
+    const fileInput = document.getElementById(`fileInput${ticket_id}`);
+    const file = fileInput.files[0];
+
+    if (!file) return;
+    if (file.type !== "image/jpeg") return;
+    if (file.size > 5 * 1024 * 1024) return;
+    
+    try {
+        const response = await axios.post(`${baseUrl}/tickets/${ticket_id}/receipt`, file, {
+            headers: {
+                "Content-Type": "image/jpeg",
+                Authorization: "Bearer " + token
+            }
+        })
+        if (response.status == 202) {
+            const filterType = document.querySelector("#filter-ticket-type");
+            filterType.value = 'none';
+            await getTableData();
+        }
     } catch (error) {
         console.log(error);
     }
@@ -281,20 +328,22 @@ const makeRow = (ticket) => {
     statusSetup(tr, ticket); 
     // makeCell(tr, ticket.status);
 
-    // Edit button for ticket, returns td element containing button
-    let editButton = makeEdit(tr, ticket);
-    
-    // Close ticket button, hidden until edit toggle
-    // let closeButton = makeOptions(editButton, 'Close Edit', ticket.ticket_id)
-    // closeButton.classList.add('close-btn')
-    
-    // Creates approve button, hidden
-    let approveButton = makeOptions(editButton, 'Approve', ticket.ticket_id)
-    approveButton.classList.add('approve-btn')
+    if (user.role == 'employee') {
+        makeUpload(tr, ticket);
+    }
 
-    // Creates delete button, hidden
-    let denyButton = makeOptions(editButton, 'Deny', ticket.ticket_id)
-    denyButton.classList.add('deny-btn')
+    if (user.role == 'manager') {
+        // Edit button for ticket, returns td element containing button
+        let editButton = makeEdit(tr, ticket);
+
+        // Creates approve button, hidden
+        let approveButton = makeOptions(editButton, 'Approve', ticket.ticket_id)
+        approveButton.classList.add('approve-btn')
+    
+        // Creates delete button, hidden
+        let denyButton = makeOptions(editButton, 'Deny', ticket.ticket_id)
+        denyButton.classList.add('deny-btn')
+    }
 };
 
 const makeCell = (tr, rowProp) => {
@@ -307,6 +356,27 @@ const statusSetup = (tr, row) => {
     tdStatus.id = 'status'+row.ticket_id
     tdStatus.textContent = row.status; 
 }
+
+const makeUpload = (tr, row) => {
+    let tdUpload = tr.appendChild(document.createElement('td'));
+    let uploadForm = tdUpload.appendChild(document.createElement('form'));
+    let uploadInput = uploadForm.appendChild(document.createElement('input'));
+    let uploadButton = uploadForm.appendChild(document.createElement('input'));
+
+    uploadForm.classList.add('upload-form');
+
+    uploadInput.classList.add('file-input');
+    uploadInput.type = 'file';
+    uploadInput.accept = 'image/jpeg';
+    uploadInput.required = true;
+    uploadInput.id = `fileInput${row.ticket_id}`
+
+    uploadButton.classList.add('upload-button');
+    uploadButton.type = 'submit';
+    uploadButton.value = 'Upload'
+    uploadButton.id = `upload${row.ticket_id}`
+
+};
 
 const makeEdit = (tr, row) => {
     let tdEdit = tr.appendChild(document.createElement('td'));
@@ -336,15 +406,30 @@ const enableRow = (rowTarget) => {
             rowInputs[ips].hidden = false;
         }
 
-        if (rowInputs[ips].value === 'Edit'){
+        if (rowInputs[ips].value === 'Resolve'){
             rowInputs[ips].hidden = true;
         }
     };
 };   
 
+const filterByType = document.querySelector("#filter-ticket-type");
+filterByType.addEventListener("change", async (event) => {
+    const type = event.target.value;
+    if (type == 'none') {
+        await getTableData();
+    } else {
+        await getTableDataByType(type);
+    }
+})
 
-
-
+// const uploadReceipt = document.querySelector(".upload-form");
+// uploadReceipt.addEventListener("submit", (event) => {
+//     event.preventDefault();
+//     console.log(event);
+//     // const fileInput = document.querySelector(`#${event.target.id}`);
+//     // const file = fileInput.files[0];
+//     // console.log('here',file);
+// })
 
 
 // Single event listener on the table element, action in response depends on the target clicked
@@ -355,11 +440,12 @@ const enableRow = (rowTarget) => {
 // Delete button takes the row id and sends a delete request with the row id as the query string
 const table = document.getElementById('table');
 table.addEventListener('click', async (event) => {
+    
     let target = event.target;
     console.log(target)
     
     // Edit button
-    if (target.value === 'Edit'){
+    if (target.value === 'Resolve'){
         enableRow(target.id);
     }
 
@@ -379,72 +465,18 @@ table.addEventListener('click', async (event) => {
         openModal(modTarget)
     }
 
-    if (target.value === 'Close Edit'){
-        let statusCell = document.querySelector(`#status${target.id}`)
-        statusCell.textContent = 'Closed'
-    }
-
     // Submit button, send a put request to the server
     if (target.value === 'Approve'){
         await resolveTicket(target.id, 'approved');
-        // let targetRow = document.querySelector(`#row${target.id}`);
-        // let revision = targetRow.querySelectorAll('td')
-        // let texts = Array.prototype.map.call(revision, function(t) { return t.textContent; });
-        // console.log(target.id)
-        // // Assigns status value
-        // let statusCell = document.querySelector(`#status${target.id}`)
-        // let statusValue = 0
-        // if (statusCell.textContent === 'Closed') {
-        //     statusValue = 1
-        // } 
-
-        // let issueText = document.querySelector(`.issue${target.id}`)
-        // let context = {name:texts[0], subject: texts[1], issue: issueText.placeholder, contact:texts[3], status: statusValue, date:texts[5]}
-        
-        // document.getElementById('tbody').innerHTML = '';  // Resets table for repopulation
-
-        // let res = await axios.put(baseUrl+`?id=${target.id}`, context);
-        // const rowsArray = res.data.rows;
-        // for (let row in rowsArray) {
-        //     makeRow(rowsArray[row]); // Repopulates rows       
-        // }  
     }     
     
     // Delete button, sends a delete request to server
     if (target.value === 'Deny'){
-        console.log('Denied')
-        // document.getElementById('tbody').innerHTML = '';  // Resets table for repopulation
+        await resolveTicket(target.id, 'denied');
+    }
 
-        // let res = await axios.delete(baseUrl+`?id=${target.id}`);
-        // const rowsArray = res.data.rows;
-        // for (let row in rowsArray) {
-        //     makeRow(rowsArray[row]);        
-        // }
+    if (target.value === 'Upload') {
+        event.preventDefault();
+        await uploadReceipt(target.id)
     }
 });
-
-
-
-
-
-
-
-
-// get data (async) on window load gets current row data from db
-window.onload = async (e) => {
-    // const res = await axios.get(baseUrl);
-    // const ticketsArray = [{
-    //     "ticket_id": "e4c7c1b5-3c30-4e1c-b348-7b73eb5d3dcc",
-    //     "description": "Donor dinner at McDonalds",
-    //     "amount": 350,
-    //     "type": "food",
-    //     "author": "b592132a-ad52-438b-9abd-7430016596d1",
-    //     "resolver": "",
-    //     "status": "pending",
-    //     "receipt": ""
-    // }];
-    // // const ticketsArray = res.data.rows;
-    // for (let ticket in ticketsArray) {
-    //     makeRow(ticketsArray[ticket]);
-    // }; 
-};
