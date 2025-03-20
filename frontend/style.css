@@ -103,6 +103,18 @@ dialog {
     cursor:default;
 }
 
+#ticket-button, #change-role-button, #profile-button, #filter-type, #filter-status {
+    display: none;
+}
+
+#change-role-button.active, #profile-button.active {
+    display: block;
+}
+
+#ticket-button.active, #filter-type.active, #filter-status.active {
+    display: unset;
+}
+
 #login-dialog-close, #ticket-dialog-close, #change-role-dialog-close, #profile-dialog-close {
     position: absolute;
     right: 1rem;
@@ -208,6 +220,7 @@ h2 {
     text-align: center;
 }
 
+
 .success {
     color: #45a049;
 }
@@ -250,7 +263,7 @@ table {
 }
 
 #table-header, table {
-    width: 60%;
+    width: 80%;
 }
 thead {
     width: 100%;

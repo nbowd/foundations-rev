@@ -96,6 +96,10 @@ async function changeStatus(ticket_id, user_id, status) {
         return {error: "Forbidden Access", status: 403, message: "Cannot edit resolved tickets"};
     }
 
+    if (ticket.author == user.user_id) {
+        return {error: "Forbidden Access", status: 403, message: "Cannot resolve own tickets"};
+    }
+    
     const result = await ticketsDao.changeStatus(ticket_id, user_id, status);
     
     if (!result) {

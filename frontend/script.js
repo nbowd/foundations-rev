@@ -10,7 +10,12 @@ const loginCloseButton = document.querySelector("#login-dialog-close");
 
 // "Show the loginDialog" button opens the loginDialog modally
 loginShowButton.addEventListener("mousedown", () => {
-  loginDialog.showModal();
+    loginDialog.showModal();
+    const email = document.getElementById('login-email').value = "";
+    const password = document.getElementById('login-password').value = "";
+    document.getElementById('login-success').textContent = "";
+    document.getElementById('login-error').textContent = "";
+    // console.log('here')
 });
 
 // Clicking outside of element closes the loginDialog
@@ -33,7 +38,13 @@ const ticketCloseButton = document.querySelector("#ticket-dialog-close");
 
 // "Show the ticketDialog" button opens the ticketDialog modally
 ticketShowButton.addEventListener("mousedown", () => {
-  ticketDialog.showModal();
+    document.getElementById('ticket-description').value = '';
+    document.getElementById('ticket-type').value = '';
+    document.getElementById('ticket-amount').value = '';
+    document.getElementById('ticket-file-input').value = '';
+    document.getElementById('ticket-success').textContent = "";
+    document.getElementById('ticket-error').textContent = "";
+    ticketDialog.showModal();
 });
 
 // Clicking outside of element closes the ticketDialog
@@ -55,7 +66,11 @@ const changeRoleCloseButton = document.querySelector("#change-role-dialog-close"
 
 // "Show the changeRoleDialog" button opens the changeRoleDialog modally
 changeRoleShowButton.addEventListener("mousedown", () => {
-  changeRoleDialog.showModal();
+    document.getElementById('change-role-employee').value = '';
+    document.getElementById('change-role-role').value = '';
+    document.getElementById('change-role-success').textContent = "";
+    document.getElementById('change-role-error').textContent = "";
+    changeRoleDialog.showModal();
 });
 
 // Clicking outside of element closes the changeRoleDialog
@@ -77,7 +92,14 @@ const profileCloseButton = document.querySelector("#profile-dialog-close");
 
 // "Show the profileDialog" button opens the profileDialog modally
 profileShowButton.addEventListener("mousedown", () => {
-  profileDialog.showModal();
+    document.getElementById('profile-first').value = '';
+    document.getElementById('profile-last').value = '';
+    document.getElementById('profile-location').value = '';
+    document.getElementById('profile-title').value = '';
+    document.getElementById('profile-file-input').value = '';
+    document.getElementById('profile-success').textContent = "";
+    document.getElementById('profile-error').textContent = "";
+    profileDialog.showModal();
 });
 
 // Clicking outside of element closes the profileDialog
@@ -100,7 +122,6 @@ profileCloseButton.addEventListener("mousedown", (event) => {
 
 // PROFILE
 function toggleUpload(view) {
-    console.log(view)
     if (view === 'upload') {
         document.getElementById('profile-upload').classList.add('active');
         document.getElementById('toggle-upload-input').classList.remove('active');
@@ -124,7 +145,7 @@ async function changeRole(employee_id, role) {
             successMsg.textContent = 'Role successfully changed';
             setTimeout(() => {
                 changeRoleDialog.close();
-            }, 2000);
+            }, 1500);
         }
     } catch (error) {
         errorMsg.textContent = error.response.data.message;
@@ -231,10 +252,10 @@ async function validateProfile() {
     await updateProfile(updateObject, file);
     // console.log('updated? profile', profile);
     await setProfile(profile);
+    profileDialog.close();
 }
 
 async function setProfile(profile){
-    // console.log('set profile',profile)
     document.querySelector(".profile-name").textContent = `${profile.first_name} ${profile.last_name}`;
     document.querySelector(".profile-title").textContent = profile.title;
     document.querySelector(".profile-location").textContent = profile.office_location;
@@ -251,6 +272,19 @@ async function setProfile(profile){
 
 // LOGIN
 function toggleForm(form) {
+    // Reset Login Form
+    document.getElementById('login-email').value = "";
+    document.getElementById('login-password').value = "";
+    document.getElementById('login-success').textContent = "";
+    document.getElementById('login-error').textContent = "";
+
+    // Reset Create Form
+    document.getElementById('create-email').value = "";
+    document.getElementById('create-password').value = "";
+    document.getElementById('create-password-confirm').value = "";
+    document.getElementById('create-success').textContent = "";
+    document.getElementById('create-error').textContent = "";
+
     if (form === 'create-account') {
         document.getElementById('login-form').classList.remove('active');
         document.getElementById('create-account-form').classList.add('active');
@@ -283,6 +317,26 @@ async function validateLogin() {
     }
 }
 
+async function makeVisible() {
+    const newTicket = document.querySelector("#ticket-button");
+    const changeRole = document.querySelector("#change-role-button");
+    const editProfile = document.querySelector("#profile-button");
+    const filterType = document.querySelector("#filter-type");
+    const filterStatus = document.querySelector("#filter-status");
+
+    if (user.role == 'manager') {
+        changeRole.classList.add('active');
+        filterStatus.classList.add('active')
+    }
+
+    if (user.role == 'employee') {
+        filterType.classList.add('active')
+    }
+    
+    newTicket.classList.add('active');
+    editProfile.classList.add('active');
+}
+
 async function login(email, password) {
     try {
         const res = await axios.post(`${baseUrl}/login`,{
@@ -293,7 +347,8 @@ async function login(email, password) {
             user = res.data.user;
             token = res.data.token;
             profile = res.data.user.profile;
-            // console.log('login profile', profile);
+
+            makeVisible();
             await setProfile(profile);
             document.getElementById('login-success').textContent = "Login Successful";
             await getTableData();
@@ -436,7 +491,7 @@ async function getTableData() {
     let tickets = [];
     try {
         if (user.role === 'manager') {
-            const res = await axios.get(`${baseUrl}/tickets?status=pending`, {
+            const res = await axios.get(`${baseUrl}/tickets`, {
                     headers: {
                         Authorization: "Bearer " + token
                     }
@@ -455,33 +510,59 @@ async function getTableData() {
     } catch (error) {
         console.log(error);
     }
-
     if (tickets.length == 0) return;
     document.querySelector('#tbody').innerHTML = "";
     for (let ticket of tickets) {
+        if (user.role == 'manager' && ticket.author == user.user_id){
+            continue;
+        }
         makeRow(ticket);
     }
 }
 
 async function getTableDataByType(type) {
     if (!user || !token || user.role != 'employee') return;
-    let tickets = [];
 
     try {
+        let tickets = [];
         const res = await axios.get(`${baseUrl}/tickets?type=${type}&author=${user.user_id}`, {
             headers: {
                 Authorization: "Bearer " + token
             }
         });
         tickets = res.data;
+        document.querySelector('#tbody').innerHTML = "";
+        if (tickets.length == 0) return;
+        for (let ticket of tickets) {
+            makeRow(ticket);
+        }
     } catch (error) {
         console.log(error);
     }
 
-    if (tickets.length == 0) return;
-    document.querySelector('#tbody').innerHTML = "";
-    for (let ticket of tickets) {
-        makeRow(ticket);
+}
+
+async function getTableDataByStatus(status) {
+    console.log('status loop', status)
+    if (!user || !token || user.role != 'manager') return;
+    try {
+        let tickets = [];
+        const res = await axios.get(`${baseUrl}/tickets?status=${status}`, {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+        });
+        tickets = res.data;
+        document.querySelector('#tbody').innerHTML = "";
+        if (tickets.length == 0) return;
+        for (let ticket of tickets) {
+            if (user.role == 'manager' && ticket.author == user.user_id){
+                continue;
+            }
+            makeRow(ticket);
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -492,9 +573,16 @@ async function resolveTicket(ticket_id, status) {
                 Authorization: "Bearer " + token
             }
         });
-        if (res.status == 202) {
+        if (res.status != 202) return;
+        
+        let filterStatus = document.querySelector('#filter-ticket-status').value;
+        console.log(filterStatus)
+        if (filterStatus == 'none') {
             await getTableData();
-        } 
+        } else {
+            await getTableDataByStatus(filterStatus);
+        }
+        
     } catch (error) {
         console.log(error);
     }
@@ -570,11 +658,11 @@ const makeRow = (ticket) => {
         let editButton = makeEdit(tr, ticket);
 
         // Creates approve button, hidden
-        let approveButton = makeOptions(editButton, 'Approve', ticket.ticket_id)
+        let approveButton = makeOptions(editButton, 'Approve', 'approve'+ ticket.ticket_id)
         approveButton.classList.add('approve-btn')
     
         // Creates delete button, hidden
-        let denyButton = makeOptions(editButton, 'Deny', ticket.ticket_id)
+        let denyButton = makeOptions(editButton, 'Deny', 'deny' +  ticket.ticket_id)
         denyButton.classList.add('deny-btn')
     }
 };
@@ -616,7 +704,7 @@ const makeEdit = (tr, row) => {
     let editButton = tdEdit.appendChild(document.createElement('input'));
     editButton.type = 'submit';
     editButton.value = 'Resolve';
-    editButton.id = row.ticket_id;
+    editButton.id = 'resolve' + row.ticket_id;
     editButton.classList.add('edit-btn');
     return tdEdit
 }
@@ -632,7 +720,8 @@ const makeOptions = (td, text, id) => {
 
 // Reveals hidden buttons, hides edit button
 const enableRow = (rowTarget) => {
-  let row = document.querySelector('#row'+rowTarget);
+    let parsedTarget = rowTarget.split('resolve')[1];
+    let row = document.querySelector('#row'+parsedTarget);
   let rowInputs = row.querySelectorAll('input');
     for (let ips in rowInputs){
         if (rowInputs[ips].hidden === true){
@@ -654,6 +743,16 @@ filterByType.addEventListener("change", async (event) => {
         await getTableDataByType(type);
     }
 })
+
+const filterStatus = document.querySelector("#filter-status");
+filterStatus.addEventListener("change", async (event) => {
+    const status = event.target.value;
+    if (status == 'none') {
+        await getTableData();
+    } else {
+        await getTableDataByStatus(status);
+    }
+})  
 
 // const uploadReceipt = document.querySelector(".upload-form");
 // uploadReceipt.addEventListener("submit", (event) => {
@@ -700,12 +799,26 @@ table.addEventListener('click', async (event) => {
 
     // Submit button, send a put request to the server
     if (target.value === 'Approve'){
-        await resolveTicket(target.id, 'approved');
+        let parsedId = target.id.split('approve')[1];
+        let denyBtn = document.querySelector(`#deny${parsedId}`);
+        let resolveBtn = document.querySelector(`#resolve${parsedId}`);
+
+        resolveBtn.hidden = false;
+        denyBtn.hidden = true;
+        target.hidden = true;
+        await resolveTicket(parsedId, 'approved');
     }     
     
     // Delete button, sends a delete request to server
     if (target.value === 'Deny'){
-        await resolveTicket(target.id, 'denied');
+        let parsedId = target.id.split('deny')[1];
+        let approveBtn = document.querySelector(`#approve${parsedId}`);
+        let resolveBtn = document.querySelector(`#resolve${parsedId}`);
+
+        resolveBtn.hidden = false;
+        approveBtn.hidden = true;
+        target.hidden = true;
+        await resolveTicket(parsedId, 'denied');
     }
 
     if (target.value === 'Upload') {

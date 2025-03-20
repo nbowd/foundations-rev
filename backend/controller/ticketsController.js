@@ -61,7 +61,6 @@ function validateTicketPostMiddleware(req, res, next) {
 /* istanbul ignore next */
 ticketsRouter.get('/', authenticateToken, async function(req, res) {
     const queryParams = req.query;
-    
     if (queryParams.status) {
         const tickets = await ticketsService.getTicketsByStatus(queryParams.status, req.user.id);
         if (tickets.error) {
@@ -92,7 +91,7 @@ ticketsRouter.get('/', authenticateToken, async function(req, res) {
         return res.status(tickets.status).json(tickets);
     }
 
-    return res.status(200).json(tickets);
+    return res.status(200).json(tickets.tickets);
 })
 
 /* istanbul ignore next */
