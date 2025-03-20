@@ -230,12 +230,7 @@ async function validateProfile() {
         document.getElementById('profile-error').textContent = 'Invalid file size. 5MB or less.';
         return;
     }
-    // const updateObject = {
-    //     first_name: first_name? first_name: profile.first_name,
-    //     last_name: last_name? last_name: profile.last_name,
-    //     office_location: office_location && office_location != 'none'? office_location: profile.office_location,
-    //     title: title && title != 'none'? title: profile.title
-    // };
+
     const updateObject = {};
     if (first_name) {
         updateObject.first_name = first_name;
@@ -267,6 +262,8 @@ async function setProfile(profile){
             }
         });
         document.querySelector(".profile-picture").src = response.data.signedUrl.signedUrl;
+    } else {
+        document.querySelector(".profile-picture").src = '../frontend/images/default-profile.jpg'
     }
 }
 
@@ -484,7 +481,14 @@ function validateTicket() {
     createTicket(user.user_id, description, type, amount, file);
 }
 
-
+function sortTickets(tickets, direction) {
+    if (tickets.length == 0) return;
+    if (direction == 'asc') {
+        tickets = tickets.sort((a, b) => b.date_created - a.date_created);
+    } else {
+        tickets = tickets.sort((a, b) => a.date_created - b.date_created);
+    }
+}
 
 async function getTableData() {
     if (!user || !token) return;
@@ -507,16 +511,17 @@ async function getTableData() {
             });
             tickets = res.data;
         }        
+        if (tickets.length == 0) return;
+        document.querySelector('#tbody').innerHTML = "";
+        sortTickets(tickets, 'asc');
+        for (let ticket of tickets) {
+            if (user.role == 'manager' && ticket.author == user.user_id){
+                continue;
+            }
+            makeRow(ticket);
+        }
     } catch (error) {
         console.log(error);
-    }
-    if (tickets.length == 0) return;
-    document.querySelector('#tbody').innerHTML = "";
-    for (let ticket of tickets) {
-        if (user.role == 'manager' && ticket.author == user.user_id){
-            continue;
-        }
-        makeRow(ticket);
     }
 }
 
@@ -533,6 +538,7 @@ async function getTableDataByType(type) {
         tickets = res.data;
         document.querySelector('#tbody').innerHTML = "";
         if (tickets.length == 0) return;
+        sortTickets(tickets, 'asc');
         for (let ticket of tickets) {
             makeRow(ticket);
         }
@@ -555,6 +561,7 @@ async function getTableDataByStatus(status) {
         tickets = res.data;
         document.querySelector('#tbody').innerHTML = "";
         if (tickets.length == 0) return;
+        sortTickets(tickets, 'desc');
         for (let ticket of tickets) {
             if (user.role == 'manager' && ticket.author == user.user_id){
                 continue;
@@ -653,7 +660,7 @@ const makeRow = (ticket) => {
         makeUpload(tr, ticket);
     }
 
-    if (user.role == 'manager') {
+    if (user.role == 'manager' && ticket.status == 'pending') {
         // Edit button for ticket, returns td element containing button
         let editButton = makeEdit(tr, ticket);
 

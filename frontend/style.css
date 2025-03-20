@@ -25,10 +25,11 @@
 }
 
 .profile img {
-    border-radius: 150px;
+    border-radius: 50%;
     margin-top: 3rem;
     height: 9rem;
     width: 9rem;
+    object-fit: cover;
 }
 
 .profile-info {

@@ -66,7 +66,8 @@ async function createTicket({description, type, amount}, user) {
         author: user.id,
         resolver: "",
         status: "pending",
-        receipt: ""
+        receipt: "",
+        date_created: Date.now()
     };
 
     const result = await ticketsDao.createTicket(newTicket);
