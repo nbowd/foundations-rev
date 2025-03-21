@@ -53,15 +53,17 @@ usersRouter.patch('/:user_id', authenticateToken, validateManagerMiddleWare, val
     return res.status(200).json(user.user);
 });
 
+// Delete route for testing
+
 /* istanbul ignore next */
-usersRouter.delete('/:user_id', async function(req, res) {
-    const user = await usersService.deleteUser(req.params.user_id);
+// usersRouter.delete('/:user_id', async function(req, res) {
+//     const user = await usersService.deleteUser(req.params.user_id);
 
-    if (user.error) {
-        return res.status(user.status).json(user);
-    }
+//     if (user.error) {
+//         return res.status(user.status).json(user);
+//     }
 
-    return res.status(200).json(user);
-})
+//     return res.status(200).json(user);
+// })
 
 module.exports = {validateChangeRole, usersRouter};

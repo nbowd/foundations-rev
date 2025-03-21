@@ -133,15 +133,17 @@ ticketsRouter.patch('/:ticket_id', validateStatusChangeMiddleware, authenticateT
     return res.status(202).json(result.ticket);
 })
 
+// DELETE ROUTE USED FOR TESTING
+
 /* istanbul ignore next */
-ticketsRouter.delete('/:ticket_id', async function(req, res) {
-    const ticket = await ticketsService.deleteTicket(req.params.ticket_id);
+// ticketsRouter.delete('/:ticket_id', async function(req, res) {
+//     const ticket = await ticketsService.deleteTicket(req.params.ticket_id);
 
-    if (ticket.error) {
-        return res.status(ticket.status).json(ticket);
-    }
+//     if (ticket.error) {
+//         return res.status(ticket.status).json(ticket);
+//     }
 
-    return res.status(200).json(ticket);
-})
+//     return res.status(200).json(ticket);
+// })
 
 module.exports = {validateTicketPost, validateReceipt, validateStatusChange , ticketsRouter};
