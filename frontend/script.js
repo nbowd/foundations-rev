@@ -194,7 +194,6 @@ async function updateProfile(updateObject, file) {
         })
 
         if (res.status != 200) return;
-        console.log(res.data)
         profile = res.data;
         document.getElementById('profile-success').textContent = 'Profile updated';
         if (!file) return;
@@ -250,7 +249,6 @@ async function validateProfile() {
         updateObject.title = title;
     }
     await updateProfile(updateObject, file);
-    // console.log('updated? profile', profile);
     await setProfile(profile);
     profileDialog.close();
 }
@@ -368,7 +366,6 @@ async function createUser(email, password) {
             username: email,
             password
         })
-        console.log(res)
         if (res.status != 201) {
             document.getElementById('create-error').textContent = 'User could not be created.';
             return;
@@ -554,7 +551,6 @@ async function getTableDataByType(type) {
 }
 
 async function getTableDataByStatus(status) {
-    console.log('status loop', status)
     if (!user || !token || user.role != 'manager') return;
     try {
         let tickets = [];
@@ -588,7 +584,6 @@ async function resolveTicket(ticket_id, status) {
         if (res.status != 202) return;
         
         let filterStatus = document.querySelector('#filter-ticket-status').value;
-        console.log(filterStatus)
         if (filterStatus == 'none') {
             await getTableData();
         } else {
@@ -632,6 +627,7 @@ function copyUserId(user_id) {
     navigator.clipboard.writeText(user_id);
     alert("Copied text: " + user_id);
 }
+
 // TABLE
 const makeRow = (ticket) => {
 
@@ -781,22 +777,6 @@ filterStatus.addEventListener("change", async (event) => {
     }
 })  
 
-// const uploadReceipt = document.querySelector(".upload-form");
-// uploadReceipt.addEventListener("submit", (event) => {
-//     event.preventDefault();
-//     console.log(event);
-//     // const fileInput = document.querySelector(`#${event.target.id}`);
-//     // const file = fileInput.files[0];
-//     // console.log('here',file);
-// })
-
-
-// Single event listener on the table element, action in response depends on the target clicked
-// Edit button reveals hidden buttons, hides itself
-// View activates a modal containing the connected issue
-// Close Ticket changes the current status of that ticket to closed, still needs to be submitted
-// Submit button gets the current table values and makes an update query
-// Delete button takes the row id and sends a delete request with the row id as the query string
 const table = document.getElementById('table');
 table.addEventListener('click', async (event) => {
     
