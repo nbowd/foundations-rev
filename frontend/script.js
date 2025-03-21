@@ -15,7 +15,12 @@ loginShowButton.addEventListener("mousedown", () => {
     const password = document.getElementById('login-password').value = "";
     document.getElementById('login-success').textContent = "";
     document.getElementById('login-error').textContent = "";
-    // console.log('here')
+
+    document.getElementById('create-email').value = "";
+    document.getElementById('create-password').value = "";
+    document.getElementById('create-password-confirm').value = "";
+    document.getElementById('create-success').textContent = "";
+    document.getElementById('create-error').textContent = "";
 });
 
 // Clicking outside of element closes the loginDialog
@@ -515,9 +520,9 @@ async function getTableData() {
         document.querySelector('#tbody').innerHTML = "";
         sortTickets(tickets, 'asc');
         for (let ticket of tickets) {
-            if (user.role == 'manager' && ticket.author == user.user_id){
-                continue;
-            }
+            // if (user.role == 'manager' && ticket.author.user_id == user.user_id){
+            //     continue;
+            // }
             makeRow(ticket);
         }
     } catch (error) {
@@ -563,7 +568,7 @@ async function getTableDataByStatus(status) {
         if (tickets.length == 0) return;
         sortTickets(tickets, 'desc');
         for (let ticket of tickets) {
-            if (user.role == 'manager' && ticket.author == user.user_id){
+            if (user.role == 'manager' && ticket.author.user_id == user.user_id){
                 continue;
             }
             makeRow(ticket);
@@ -622,6 +627,11 @@ async function uploadReceipt(id) {
         console.log(error);
     }
 }
+
+function copyUserId(user_id) {
+    navigator.clipboard.writeText(user_id);
+    alert("Copied text: " + user_id);
+}
 // TABLE
 const makeRow = (ticket) => {
 
@@ -634,7 +644,9 @@ const makeRow = (ticket) => {
     makeCell(tr, ticket.ticket_id);
 
     // Author Cell
-    makeCell(tr, ticket.author);
+    // makeCell(tr, ticket.author.username);
+    makeAuthor(tr, ticket.author);
+// 
 
     // View Issue Button
     // issueSetup(tr, ticket)
@@ -660,7 +672,7 @@ const makeRow = (ticket) => {
         makeUpload(tr, ticket);
     }
 
-    if (user.role == 'manager' && ticket.status == 'pending') {
+    if (user.role == 'manager' && ticket.status == 'pending' && user.user_id != ticket.author.user_id) {
         // Edit button for ticket, returns td element containing button
         let editButton = makeEdit(tr, ticket);
 
@@ -723,6 +735,14 @@ const makeOptions = (td, text, id) => {
     optionsButton.hidden = true;
     optionsButton.classList.add('edit-btn');
     return optionsButton
+}
+
+const makeAuthor = (tr, author) => {
+    let cell = tr.appendChild(document.createElement('td'));
+    let span = cell.appendChild(document.createElement('span'));
+    span.classList.add('copy-author');
+    span.textContent = author.username;
+    span.onclick = () => copyUserId(author.user_id);
 }
 
 // Reveals hidden buttons, hides edit button

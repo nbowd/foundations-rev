@@ -1,0 +1,2697 @@
+{
+	"info": {
+		"_postman_id": "bcc19613-45db-41d7-9f8a-e54e4b32a5f9",
+		"name": "Foundational Revature",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39378807"
+	},
+	"item": [
+		{
+			"name": "Login/Register",
+			"item": [
+				{
+					"name": "Register - New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set boat id environment variable from response\r",
+									"pm.environment.set(\"employee_user_id\", pm.response.json()[\"user_id\"]);\r",
+									"\r",
+									"pm.test(\"201 status code\", function () {\r",
+									"    //Check for 201 status code\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"username\"]).to.eq(\"revature@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"role\"]).to.eq(\"employee\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature@rev.com\",\r\n    \"password\": \"rev\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register - Duplicate Username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"409 status code\", function () {\r",
+									"    //Check for 409 status code\r",
+									"    pm.response.to.have.status(409);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"409 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Duplicate Username\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Username is already taken\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature@rev.com\",\r\n    \"password\": \"rev\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Wrong Username Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Username missing or invalid\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature111@rev.com\",\r\n    \"password\": \"rev\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Wrong Password Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Password missing or invalid\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature@rev.com\",\r\n    \"password\": \"rev111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Missing Username Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing or Empty Username or Password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"\",\r\n    \"password\": \"rev111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Missing Password Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing or Empty Username or Password\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature@rev.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Correct Manager Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"manager_user_id\", pm.response.json()[\"user\"][\"user_id\"]);\r",
+									"pm.environment.set(\"manager_jwt\", pm.response.json()[\"token\"]);\r",
+									"\r",
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"user\"][\"username\"]).to.eq(\"nick@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"user\"][\"role\"]).to.eq(\"manager\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"nick@rev.com\",\r\n    \"password\": \"rev\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Correct Employee Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"employee_user_id\", pm.response.json()[\"user\"][\"user_id\"]);\r",
+									"pm.environment.set(\"employee_jwt\", pm.response.json()[\"token\"]);\r",
+									"\r",
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"user\"][\"username\"]).to.eq(\"revature@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"user\"][\"role\"]).to.eq(\"employee\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"revature@rev.com\",\r\n    \"password\": \"rev\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/login",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Submit Ticket",
+			"item": [
+				{
+					"name": "Submit - No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"{{employee_user_id}}\",\r\n    \"description\": \"Donor dinner at McDonalds\",\r\n    \"type\": \"food\",\r\n    \"amount\": 350\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit - Missing Amount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing/Empty amount and/or description attributes\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"dff36116-6c17-494a-9141-881a9c6744d8\",\r\n    \"description\": \"Donor dinner at McDonalds\",\r\n    \"type\": \"food\",\r\n    \"amount\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit - Missing Description",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing/Empty amount and/or description attributes\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"dff36116-6c17-494a-9141-881a9c6744d8\",\r\n    \"description\": \"\",\r\n    \"type\": \"food\",\r\n    \"amount\": 350\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit - Correct Ticket 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set boat id environment variable from response\r",
+									"pm.environment.set(\"ticket_id_1\", pm.response.json()[\"ticket_id\"]);\r",
+									"\r",
+									"pm.test(\"201 status code\", function () {\r",
+									"    //Check for 201 status code\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"description\"]).to.eq(\"Donor dinner at McDonalds\");\r",
+									"   pm.expect(pm.response.json()[\"type\"]).to.eq(\"food\");\r",
+									"   pm.expect(pm.response.json()[\"amount\"]).to.eq(350);\r",
+									"   pm.expect(pm.response.json()[\"status\"]).to.eq(\"pending\");\r",
+									"   pm.expect(pm.response.json()[\"resolver\"]).to.eq(\"\");\r",
+									"   pm.expect(pm.response.json()[\"receipt\"]).to.eq(\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"{{employee_user_id}}\",\r\n    \"description\": \"Donor dinner at McDonalds\",\r\n    \"type\": \"food\",\r\n    \"amount\": 350\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit - Correct Ticket 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set boat id environment variable from response\r",
+									"pm.environment.set(\"ticket_id_2\", pm.response.json()[\"ticket_id\"]);\r",
+									"\r",
+									"pm.test(\"201 status code\", function () {\r",
+									"    //Check for 201 status code\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"description\"]).to.eq(\"The Awkward Silcence Workshop travel expenses\");\r",
+									"   pm.expect(pm.response.json()[\"type\"]).to.eq(\"travel\");\r",
+									"   pm.expect(pm.response.json()[\"amount\"]).to.eq(100);\r",
+									"   pm.expect(pm.response.json()[\"status\"]).to.eq(\"pending\");\r",
+									"   pm.expect(pm.response.json()[\"resolver\"]).to.eq(\"\");\r",
+									"   pm.expect(pm.response.json()[\"receipt\"]).to.eq(\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"{{employee_user_id}}\",\r\n    \"description\": \"The Awkward Silcence Workshop travel expenses\",\r\n    \"type\": \"travel\",\r\n    \"amount\": 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Submit - Correct Ticket 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set boat id environment variable from response\r",
+									"pm.environment.set(\"ticket_id_3\", pm.response.json()[\"ticket_id\"]);\r",
+									"\r",
+									"pm.test(\"201 status code\", function () {\r",
+									"    //Check for 201 status code\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"description\"]).to.eq(\"Business lunch with new client\");\r",
+									"   pm.expect(pm.response.json()[\"type\"]).to.eq(\"food\");\r",
+									"   pm.expect(pm.response.json()[\"amount\"]).to.eq(76.16);\r",
+									"   pm.expect(pm.response.json()[\"status\"]).to.eq(\"pending\");\r",
+									"   pm.expect(pm.response.json()[\"resolver\"]).to.eq(\"\");\r",
+									"   pm.expect(pm.response.json()[\"receipt\"]).to.eq(\"\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author\": \"{{employee_user_id}}\",\r\n    \"description\": \"Business lunch with new client\",\r\n    \"type\": \"food\",\r\n    \"amount\": 76.16\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ticketing System",
+			"item": [
+				{
+					"name": "Manager View Pending Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json().length >= 0).to.eq(true);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?status=pending",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Employee View Pending Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"   pm.expect(pm.response.json()[\"message\"]).to.eq(\"Manager only endpoint\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?status=pending",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Missing JWT View Pending Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?status=pending",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Ticket - No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Employee Process Attempt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 403 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"403 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Manager only endpoint\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Ticket - Invalid Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"'ticket_id' path parameter, and 'status' JSON body required\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Current-User",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// Missing status\r\n{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Ticket - Approve",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"202 status code\", function () {\r",
+									"    //Check for 202 status code\r",
+									"    pm.response.to.have.status(202);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"status\"]).to.eq(\"approved\");\r",
+									"   pm.expect(pm.response.json()[\"resolver\"]).to.eq(pm.environment.get(\"manager_user_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Ticket - Deny",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"202 status code\", function () {\r",
+									"    //Check for 202 status code\r",
+									"    pm.response.to.have.status(202);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"status\"]).to.eq(\"denied\");\r",
+									"   pm.expect(pm.response.json()[\"resolver\"]).to.eq(pm.environment.get(\"manager_user_id\"));\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"denied\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_2}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Ticket - Attempt change on resolved",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"   pm.expect(pm.response.json()[\"message\"]).to.eq(\"Cannot edit resolved tickets\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Current-User",
+								"value": "{{manager_user_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"denied\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "View Tickets",
+			"item": [
+				{
+					"name": "View Previous Tickets",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json().length > 0).to.eq(true);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?author={{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "{{employee_user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Tickets by Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json().length > 0).to.eq(true);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?type=food&author={{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "food"
+								},
+								{
+									"key": "author",
+									"value": "{{employee_user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Tickets No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets?type=food",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "food"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Change Role",
+			"item": [
+				{
+					"name": "Change Employee to Manager No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"manager\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Employee to Manager Missing Role",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing user_id path param, role body attribute, user auth\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Employee to Manager",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"username\"]).to.eq(\"revature@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"role\"]).to.eq(\"manager\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"manager\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Manager to Employee",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"username\"]).to.eq(\"revature@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"role\"]).to.eq(\"employee\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"employee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/users/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add Receipt",
+			"item": [
+				{
+					"name": "Add Receipt - No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "image/jpeg",
+								"type": "text"
+							},
+							{
+								"key": "x-user",
+								"value": "John",
+								"type": "text"
+							},
+							{
+								"key": "x-amount",
+								"value": "50",
+								"type": "text"
+							},
+							{
+								"key": "x-description",
+								"value": "Lunch",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f000fe2-9876-4e40-873e-d3ff9eaa2c48"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/tickets/{{ticket_id_3}}/receipt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_3}}",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Receipt - Non owner JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 403 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"403 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Ticket is not owned by requester\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "image/jpeg",
+								"type": "text"
+							},
+							{
+								"key": "x-user",
+								"value": "John",
+								"type": "text"
+							},
+							{
+								"key": "x-amount",
+								"value": "50",
+								"type": "text"
+							},
+							{
+								"key": "x-description",
+								"value": "Lunch",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f000fe2-9876-4e40-873e-d3ff9eaa2c48"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/tickets/{{ticket_id_3}}/receipt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_3}}",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Receipt - No receipt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"No image uploaded\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "image/jpeg",
+								"type": "text"
+							},
+							{
+								"key": "x-user",
+								"value": "John",
+								"type": "text"
+							},
+							{
+								"key": "x-amount",
+								"value": "50",
+								"type": "text"
+							},
+							{
+								"key": "x-description",
+								"value": "Lunch",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": ""
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/tickets/{{ticket_id_3}}/receipt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_3}}",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Receipt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"202 status code\", function () {\r",
+									"    //Check for 202 status code\r",
+									"    pm.response.to.have.status(202);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"author\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"receipt\"].length > 0).to.eq(true);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "image/jpeg",
+								"type": "text"
+							},
+							{
+								"key": "x-user",
+								"value": "John",
+								"type": "text"
+							},
+							{
+								"key": "x-amount",
+								"value": "50",
+								"type": "text"
+							},
+							{
+								"key": "x-description",
+								"value": "Lunch",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f000fe2-9876-4e40-873e-d3ff9eaa2c48"
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/tickets/{{ticket_id_3}}/receipt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_3}}",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update Profile",
+			"item": [
+				{
+					"name": "Update Profile Info - No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Nick\",\r\n    \"title\": \"Associate SWE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Info - Wrong JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 403 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"403 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Profile is not owned by requester\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Nick\",\r\n    \"title\": \"Associate SWE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"user_id\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"first_name\"]).to.eq(\"Nick\");\r",
+									"   pm.expect(pm.response.json()[\"last_name\"]).to.eq(\"Bowden\");\r",
+									"   pm.expect(pm.response.json()[\"title\"]).to.eq(\"Associate SWE\");\r",
+									"   pm.expect(pm.response.json()[\"office_location\"]).to.eq(\"Seattle\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\": \"Nick\",\r\n    \"last_name\": \"Bowden\",\r\n    \"office_location\": \"Seattle\",\r\n    \"title\": \"Associate SWE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Profile Picture No JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"401 status code\", function () {\r",
+									"    //Check for 401 status code\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"401 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Unauthorized\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Missing JWT Authorization\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f0011bd-da8b-4010-9e4e-d64dcb4e0ab7"
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}/photo",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Profile Picture Wrong JWT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"403 status code\", function () {\r",
+									"    //Check for 403 status code\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"403 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Forbidden Access\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"Profile is not owned by requester\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{manager_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f0011bd-da8b-4010-9e4e-d64dcb4e0ab7"
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}/photo",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Profile Picture No photo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"400 status code\", function () {\r",
+									"    //Check for 400 status code\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"400 error message\", function () {\r",
+									"     //Check for appropriate error message\r",
+									"     pm.expect(pm.response.json()[\"error\"]).to.eq(\"Bad Request\");\r",
+									"     pm.expect(pm.response.json()[\"message\"]).to.eq(\"No image uploaded\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}/photo",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Profile Picture",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"user_id\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"   pm.expect(pm.response.json()[\"first_name\"]).to.eq(\"Nick\");\r",
+									"   pm.expect(pm.response.json()[\"last_name\"]).to.eq(\"Bowden\");\r",
+									"   pm.expect(pm.response.json()[\"office_location\"]).to.eq(\"Seattle\");\r",
+									"   pm.expect(pm.response.json()[\"title\"]).to.eq(\"Associate SWE\");\r",
+									"   pm.expect(pm.response.json()[\"profile_picture\"].length > 0).to.eq(true);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f0011bd-da8b-4010-9e4e-d64dcb4e0ab7"
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/profile/{{employee_user_id}}/photo",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile",
+								"{{employee_user_id}}",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Signed URL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// pm.test(\"content is valid\", function () {\r",
+									"//    //Check if the response content is valid and matches the expected values\r",
+									"//    pm.expect(pm.response.json()[\"user_id\"]).to.eq(pm.environment.get(\"employee_user_id\"));\r",
+									"//    pm.expect(pm.response.json()[\"first_name\"]).to.eq(\"Nick\");\r",
+									"//    pm.expect(pm.response.json()[\"last_name\"]).to.eq(\"Bowden\");\r",
+									"//    pm.expect(pm.response.json()[\"office_location\"]).to.eq(\"Seattle\");\r",
+									"//    pm.expect(pm.response.json()[\"title\"]).to.eq(\"Associate SWE\");\r",
+									"//    pm.expect(pm.response.json()[\"profile_picture\"].length > 0).to.eq(true);\r",
+									"// });"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{employee_jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/profile?key_id=profile/c2741478-4ba7-44ce-ad55-297c891b0476.jpg",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile"
+							],
+							"query": [
+								{
+									"key": "key_id",
+									"value": "profile/c2741478-4ba7-44ce-ad55-297c891b0476.jpg"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DB Cleanup",
+			"item": [
+				{
+					"name": "Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"content is valid\", function () {\r",
+									"   //Check if the response content is valid and matches the expected values\r",
+									"   pm.expect(pm.response.json()[\"username\"]).to.eq(\"revature@rev.com\");\r",
+									"   pm.expect(pm.response.json()[\"role\"]).to.eq(\"employee\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/users/{{employee_user_id}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"{{employee_user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ticket 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_1}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ticket 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_2}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ticket 3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"200 status code\", function () {\r",
+									"    //Check for 200 status code\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/tickets/{{ticket_id_3}}",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"tickets",
+								"{{ticket_id_3}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

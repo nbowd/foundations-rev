@@ -3,12 +3,25 @@ const userDao = require('../repository/usersDao');
 const uuid = require('uuid');
 
 /* istanbul ignore next */
-async function getTickets() {
-    const result = await ticketsDao.getTickets();
+async function attachUser(tickets) {
+    if (tickets.length == 0) return;
+    let result = [];
+    for (let ticket of tickets) {
+        let author = await userDao.getUserById(ticket.author);
+        ticket.author = { user_id: author.user_id, username: author.username };
+        result.push(ticket);
+    }
+    return result;
+}
 
-    if (!result) {
+/* istanbul ignore next */
+async function getTickets() {
+    const tickets = await ticketsDao.getTickets();
+
+    if (!tickets) {
         return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
+        let result = await attachUser(tickets);
         return {message: "Found tickets", tickets: result}
     }
 };
@@ -30,7 +43,8 @@ async function getTicketsByStatus(status, user_id) {
     if (!tickets) {
         return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
-        return {message: "Found tickets", tickets}
+        let result = await attachUser(tickets);
+        return {message: "Found tickets", tickets: result}
     }
 };
 
@@ -41,7 +55,8 @@ async function getTicketsByAuthor(author) {
     if (!tickets) {
         return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
-        return {message: "Found tickets", tickets}
+        let result = await attachUser(tickets);
+        return {message: "Found tickets", tickets: result}
     }
 };
 
@@ -52,7 +67,8 @@ async function getTicketsByType(author, type) {
     if (!tickets) {
         return {error: "Bad Request", status: 400, message: "Failed to get tickets"};
     } else {
-        return {message: "Found tickets", tickets}
+        let result = await attachUser(tickets);
+        return {message: "Found tickets", tickets: result}
     }
 };
 
